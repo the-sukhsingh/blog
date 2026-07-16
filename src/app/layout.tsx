@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ModeToggle } from "@/components/theme/ThemeToggle";
+import Provider from "../components/Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +28,15 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Provider>
+          <ModeToggle className="fixed top-4 right-4" />
+
+          {children}
+        </Provider>
+      </body>
     </html>
   );
 }
