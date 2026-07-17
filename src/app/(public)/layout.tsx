@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: {
@@ -15,6 +16,7 @@ export default function PublicLayout({
 }) {
   return (
     <div className="flex min-h-full flex-col">
+      <Navbar />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
         {children}
       </main>

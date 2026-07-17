@@ -204,10 +204,8 @@ export default function TaxonomyDrawer({
             </SheetDescription>
           </SheetHeader>
 
-          <Separator />
-
           {/* Tabs */}
-          <div className="flex gap-1 px-5 py-3">
+          <div className="flex gap-1 bg-muted/40 border border-border/40 p-1 rounded-xl mx-5 my-3.5">
             {(["categories", "tags"] as const).map((tab) => (
               <button
                 key={tab}
@@ -216,10 +214,10 @@ export default function TaxonomyDrawer({
                   setActiveTab(tab);
                   resetForm();
                 }}
-                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-bold transition-all cursor-pointer ${
                   activeTab === tab
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {tab === "categories" ? (
@@ -229,9 +227,9 @@ export default function TaxonomyDrawer({
                 )}
                 {tab === "categories" ? "Categories" : "Tags"}
                 <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                  className={`rounded-md px-1.5 py-0.25 text-[10px] font-bold transition-colors ${
                     activeTab === tab
-                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      ? "bg-primary/10 text-primary"
                       : "bg-muted text-muted-foreground"
                   }`}
                 >

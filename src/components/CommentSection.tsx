@@ -79,33 +79,33 @@ export default function CommentSection({
   };
 
   return (
-    <div className="mt-16 border-t border-border pt-10">
-      <div className="flex items-center gap-2 mb-8">
-        <MessageSquare size={18} className="text-muted-foreground" />
-        <h3 className="font-sans text-xl font-bold tracking-tight text-foreground">
+    <div className="mt-16 border-t border-border/80 pt-12 space-y-8">
+      <div className="flex items-center gap-2">
+        <MessageSquare size={20} className="text-muted-foreground" />
+        <h3 className="font-heading text-xl font-bold tracking-tight text-foreground">
           Discussion ({comments.length})
         </h3>
       </div>
 
       {/* Comment List */}
       {comments.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-6 text-center text-muted-foreground mb-10 bg-muted/10">
-          <p className="text-sm font-medium">No comments yet.</p>
+        <div className="rounded-2xl border border-dashed border-border py-10 px-6 text-center text-muted-foreground bg-muted/10">
+          <p className="text-sm font-semibold text-foreground/80">No comments yet.</p>
           <p className="text-xs mt-1">Be the first to share your thoughts.</p>
         </div>
       ) : (
-        <div className="space-y-6 mb-12">
+        <div className="space-y-6">
           {comments.map((comment) => (
             <div
               key={comment.id}
-              className="border-b border-border/40 pb-5 last:border-0 last:pb-0"
+              className="border-b border-border/40 pb-6 last:border-0 last:pb-0"
             >
-              <div className="flex items-center gap-2 mb-2 text-xs">
+              <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
                 <span className="font-semibold text-foreground">
                   {comment.name}
                 </span>
-                <span className="text-muted-foreground">&middot;</span>
-                <span className="text-muted-foreground">
+                <span>&middot;</span>
+                <span className="font-mono">
                   {new Date(comment.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -113,7 +113,7 @@ export default function CommentSection({
                   })}
                 </span>
               </div>
-              <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
                 {comment.content}
               </p>
             </div>
@@ -122,17 +122,22 @@ export default function CommentSection({
       )}
 
       {/* Submission Form */}
-      <div className="rounded-xl border border-border bg-card p-6">
-        <h4 className="font-semibold text-sm mb-4 text-foreground">
-          Add a comment
-        </h4>
+      <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 space-y-6">
+        <div>
+          <h4 className="font-bold text-sm text-foreground">
+            Add your comment
+          </h4>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Your email address will not be published. Required fields are marked *
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <label
                 htmlFor="commenter-name"
-                className="text-xs font-medium text-muted-foreground"
+                className="text-xs font-semibold text-foreground/80"
               >
                 Name <span className="text-destructive">*</span>
               </label>
@@ -141,16 +146,16 @@ export default function CommentSection({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Name"
+                placeholder="e.g. John Doe"
                 disabled={submitting}
-                className="h-9 w-full rounded-md border border-border bg-background px-3 text-xs outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                className="h-10 w-full rounded-lg border border-border/85 bg-background px-3 text-sm outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/5 disabled:opacity-60"
                 required
               />
             </div>
             <div className="space-y-1.5">
               <label
                 htmlFor="commenter-email"
-                className="text-xs font-medium text-muted-foreground"
+                className="text-xs font-semibold text-foreground/80"
               >
                 Email <span className="text-destructive">*</span>
               </label>
@@ -159,9 +164,9 @@ export default function CommentSection({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email (will not be published)"
+                placeholder="e.g. john@example.com"
                 disabled={submitting}
-                className="h-9 w-full rounded-md border border-border bg-background px-3 text-xs outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                className="h-10 w-full rounded-lg border border-border/85 bg-background px-3 text-sm outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/5 disabled:opacity-60"
                 required
               />
             </div>
@@ -170,7 +175,7 @@ export default function CommentSection({
           <div className="space-y-1.5">
             <label
               htmlFor="commenter-content"
-              className="text-xs font-medium text-muted-foreground"
+              className="text-xs font-semibold text-foreground/80"
             >
               Comment <span className="text-destructive">*</span>
             </label>
@@ -179,16 +184,16 @@ export default function CommentSection({
               rows={4}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="What are your thoughts?"
+              placeholder="Write your comment here..."
               disabled={submitting}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20 resize-y min-h-[80px]"
+              className="w-full rounded-lg border border-border/85 bg-background px-3 py-2.5 text-sm outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/5 resize-y min-h-[100px] disabled:opacity-60"
               required
             />
           </div>
 
           {message && (
             <div
-              className={`rounded-md px-3 py-2 text-xs font-medium ${
+              className={`rounded-lg px-4 py-3 text-xs font-semibold ${
                 message.type === "success"
                   ? "bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400"
                   : "bg-destructive/10 border border-destructive/20 text-destructive"
@@ -201,9 +206,9 @@ export default function CommentSection({
           <button
             type="submit"
             disabled={submitting}
-            className="flex items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-colors cursor-pointer"
+            className="flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-all duration-150 cursor-pointer active:translate-y-px"
           >
-            {submitting && <Loader2 size={12} className="animate-spin" />}
+            {submitting && <Loader2 size={13} className="animate-spin" />}
             Submit Comment
           </button>
         </form>

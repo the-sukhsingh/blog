@@ -95,9 +95,9 @@ export default function CommentList({ initialComments }: CommentListProps) {
         : comments;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Moderation tabs */}
-      <div className="flex gap-2 border-b border-border">
+      <div className="flex gap-2 border-b border-border/80">
         {[
           { key: "PENDING", label: "Pending", count: pendingComments.length },
           {
@@ -111,15 +111,15 @@ export default function CommentList({ initialComments }: CommentListProps) {
             key={tab.key}
             type="button"
             onClick={() => setActiveTab(tab.key as any)}
-            className={`border-b-2 px-4 pb-3 text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer -mb-px ${
+            className={`border-b-2 px-4 pb-3.5 text-xs font-bold tracking-wider uppercase transition-all cursor-pointer -mb-px ${
               activeTab === tab.key
-                ? "border-primary text-foreground font-bold"
+                ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {tab.label}
             <span
-              className={`ml-2 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+              className={`ml-2.5 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                 activeTab === tab.key
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground"
@@ -132,34 +132,34 @@ export default function CommentList({ initialComments }: CommentListProps) {
       </div>
 
       {/* Moderation List */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {displayedComments.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border py-16 text-center text-muted-foreground bg-muted/10">
-            <MessageSquare className="mx-auto size-8 mb-3 opacity-30" />
-            <p className="text-sm font-medium">No comments found.</p>
+          <div className="rounded-2xl border border-dashed border-border py-20 text-center text-muted-foreground bg-muted/10">
+            <MessageSquare className="mx-auto size-9 mb-3 opacity-30 text-muted-foreground" />
+            <p className="text-sm font-semibold text-foreground/80">No comments found.</p>
             <p className="text-xs mt-1">
               There are no comments matching this category.
             </p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             {displayedComments.map((comment) => (
               <article
                 key={comment.id}
-                className="rounded-lg border border-border bg-card p-5 space-y-3"
+                className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-4 shadow-sm shadow-muted/5"
               >
                 {/* Meta details */}
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-2.5">
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-                    <span className="font-bold text-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-3">
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs">
+                    <span className="font-bold text-foreground text-sm">
                       {comment.name}
                     </span>
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <Mail size={12} />
+                    <span className="flex items-center gap-1.5 text-muted-foreground/80 font-semibold">
+                      <Mail size={13} className="opacity-75" />
                       {comment.email}
                     </span>
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <Calendar size={12} />
+                    <span className="flex items-center gap-1.5 text-muted-foreground/80 font-mono">
+                      <Calendar size={13} className="opacity-75" />
                       {new Date(comment.createdAt).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -171,10 +171,10 @@ export default function CommentList({ initialComments }: CommentListProps) {
                   </div>
 
                   <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
                       comment.approved
-                        ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
-                        : "bg-amber-100 text-amber-700 dark:bg-amber-900/25 dark:text-amber-400"
+                        ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                        : "bg-amber-500/10 text-amber-700 dark:bg-amber-950/35 dark:text-amber-400"
                     }`}
                   >
                     {comment.approved ? "Approved" : "Pending Approval"}
@@ -182,31 +182,31 @@ export default function CommentList({ initialComments }: CommentListProps) {
                 </div>
 
                 {/* Comment Content */}
-                <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
                   {comment.content}
                 </p>
 
                 {/* Action Row */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-border/30 text-xs">
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <FileText size={12} />
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-border/30 text-xs">
+                  <div className="flex items-center gap-2 text-muted-foreground/85">
+                    <FileText size={13} className="opacity-75" />
                     <span>On article:</span>
                     <Link
                       href={`/posts/${comment.post.slug}`}
                       target="_blank"
-                      className="font-semibold text-foreground hover:underline"
+                      className="font-bold text-foreground hover:text-primary transition-colors hover:underline underline-offset-2"
                     >
                       {comment.post.title} ↗
                     </Link>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     {!comment.approved && (
                       <button
                         type="button"
                         disabled={processingId === comment.id}
                         onClick={() => handleApprove(comment.id)}
-                        className="inline-flex items-center gap-1 rounded bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/95 disabled:opacity-55 cursor-pointer active:translate-y-px transition-all"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/95 disabled:opacity-60 transition-all duration-150 cursor-pointer active:translate-y-px"
                       >
                         {processingId === comment.id ? (
                           <Loader2 size={12} className="animate-spin" />
@@ -220,7 +220,7 @@ export default function CommentList({ initialComments }: CommentListProps) {
                       type="button"
                       disabled={processingId === comment.id}
                       onClick={() => handleDelete(comment.id)}
-                      className="inline-flex items-center gap-1 rounded border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:text-destructive hover:border-destructive/30 disabled:opacity-55 cursor-pointer active:translate-y-px transition-all"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-xs font-bold text-foreground hover:text-destructive hover:border-destructive/30 disabled:opacity-60 transition-all duration-150 cursor-pointer active:translate-y-px"
                     >
                       <Trash2 size={12} />
                       Delete

@@ -47,22 +47,22 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-8">
-      <div className="border-b border-border pb-8 pt-2">
-        <h1 className="font-sans text-4xl font-black tracking-tight text-foreground">
+      <div className="border-b border-border/80 pb-10">
+        <h1 className="font-heading text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
           Search
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+        <p className="mt-4 text-base text-muted-foreground max-w-xl leading-relaxed">
           Search for articles, categories, or tag names across our archives.
         </p>
       </div>
 
       <div className="max-w-2xl">
         <form method="GET" action="/search">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <div className="relative flex-1">
               <Search
-                size={15}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                size={16}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/80"
               />
               <input
                 type="search"
@@ -70,12 +70,12 @@ export default async function SearchPage({ searchParams }: Props) {
                 id="search-input"
                 defaultValue={query}
                 placeholder="Search by keywords, tags..."
-                className="h-10 w-full rounded-lg border border-border bg-background pl-10 pr-4 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+                className="h-11 w-full rounded-xl border border-border/85 bg-background pl-11 pr-4 text-sm outline-none transition-all duration-150 focus:border-primary focus:ring-2 focus:ring-primary/5"
               />
             </div>
             <button
               type="submit"
-              className="h-10 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 active:translate-y-px transition-all cursor-pointer"
+              className="h-11 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary/95 active:translate-y-px transition-all cursor-pointer"
             >
               Search
             </button>
@@ -109,7 +109,7 @@ export default async function SearchPage({ searchParams }: Props) {
           </p>
 
           {posts.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="divide-y divide-border/10">
               {posts.map((post) => (
                 <PostCard
                   key={post.id}

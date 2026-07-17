@@ -148,25 +148,25 @@ export default function TaxonomyManager({
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Categories Section */}
-        <section className="rounded-lg border border-border bg-card p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/40 pb-3">
-            <FolderOpen size={16} className="text-muted-foreground" />
-            <h2 className="text-sm font-bold text-foreground">Categories</h2>
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground ml-auto">
+        <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
+          <div className="flex items-center gap-2.5 border-b border-border/40 pb-3">
+            <FolderOpen size={16} className="text-muted-foreground/80" />
+            <h2 className="text-sm font-bold text-foreground tracking-tight">Categories</h2>
+            <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground/95 ml-auto">
               {categories.length}
             </span>
           </div>
 
           {/* Add form */}
-          <div className="space-y-3 p-3 rounded-lg border border-border/50 bg-muted/20">
+          <div className="space-y-4 p-4 rounded-xl border border-border/60 bg-muted/15">
             <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">
               New Category
             </h3>
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <label
                   htmlFor="cat-name-input"
-                  className="text-[10px] font-medium text-muted-foreground"
+                  className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
                 >
                   Name
                 </label>
@@ -176,14 +176,14 @@ export default function TaxonomyManager({
                   value={catName}
                   onChange={(e) => handleCatNameChange(e.target.value)}
                   placeholder="e.g. Technology"
-                  className="h-8 w-full rounded border border-border bg-background px-2 text-xs outline-none focus:border-primary"
+                  className="h-10 w-full rounded-lg border border-border/85 bg-background px-3 text-xs outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
                 />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="cat-slug-input"
-                    className="text-[10px] font-medium text-muted-foreground"
+                    className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
                   >
                     Slug
                   </label>
@@ -194,9 +194,9 @@ export default function TaxonomyManager({
                         setCatManualSlug(false);
                         setCatSlug(slugify(catName));
                       }}
-                      className="text-[9px] text-muted-foreground underline hover:text-foreground"
+                      className="text-[9px] font-semibold text-muted-foreground hover:text-foreground underline underline-offset-1"
                     >
-                      Auto
+                      Reset Auto
                     </button>
                   )}
                 </div>
@@ -209,7 +209,7 @@ export default function TaxonomyManager({
                     setCatSlug(e.target.value);
                   }}
                   placeholder="technology"
-                  className="h-8 w-full rounded border border-border bg-background px-2 font-mono text-xs outline-none focus:border-primary"
+                  className="h-10 w-full rounded-lg border border-border/85 bg-background px-3 font-mono text-xs outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
                 />
               </div>
             </div>
@@ -217,34 +217,34 @@ export default function TaxonomyManager({
               type="button"
               disabled={!catName.trim() || !catSlug.trim() || catCreating}
               onClick={() => void handleCreate("category")}
-              className="flex w-full items-center justify-center gap-1 rounded bg-primary py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/95 disabled:opacity-55 cursor-pointer"
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2 text-xs font-bold text-primary-foreground hover:bg-primary/95 disabled:opacity-50 transition-all duration-150 cursor-pointer active:translate-y-px"
             >
               {catCreating ? (
-                <Loader2 size={12} className="animate-spin" />
+                <Loader2 size={13} className="animate-spin" />
               ) : (
-                <Plus size={12} />
+                <Plus size={13} />
               )}
               Add Category
             </button>
           </div>
 
           {/* List */}
-          <div className="max-h-96 overflow-y-auto divide-y divide-border/40">
+          <div className="max-h-96 overflow-y-auto divide-y divide-border/40 pr-1">
             {categories.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">
+              <p className="text-xs text-muted-foreground py-8 text-center">
                 No categories found.
               </p>
             ) : (
               categories.map((cat) => (
                 <div
                   key={cat.id}
-                  className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0 group"
+                  className="flex items-center justify-between py-3 group"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-xs font-semibold text-foreground">
+                    <p className="truncate text-xs font-bold text-foreground">
                       {cat.name}
                     </p>
-                    <p className="truncate font-mono text-[10px] text-muted-foreground mt-0.5">
+                    <p className="truncate font-mono text-[9px] text-muted-foreground/80 mt-1">
                       /{cat.slug}
                     </p>
                   </div>
@@ -254,7 +254,7 @@ export default function TaxonomyManager({
                     onClick={() =>
                       void handleDelete("category", cat.id, cat.name)
                     }
-                    className="p-1.5 text-muted-foreground hover:text-destructive rounded hover:bg-muted md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                    className="p-1.5 text-muted-foreground/80 hover:text-destructive rounded-lg hover:bg-destructive/10 transition-all cursor-pointer opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -265,25 +265,25 @@ export default function TaxonomyManager({
         </section>
 
         {/* Tags Section */}
-        <section className="rounded-lg border border-border bg-card p-5 space-y-4">
-          <div className="flex items-center gap-2 border-b border-border/40 pb-3">
-            <Tag size={16} className="text-muted-foreground" />
-            <h2 className="text-sm font-bold text-foreground">Tags</h2>
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground ml-auto">
+        <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
+          <div className="flex items-center gap-2.5 border-b border-border/40 pb-3">
+            <Tag size={16} className="text-muted-foreground/80" />
+            <h2 className="text-sm font-bold text-foreground tracking-tight">Tags</h2>
+            <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground/95 ml-auto">
               {tags.length}
             </span>
           </div>
 
           {/* Add form */}
-          <div className="space-y-3 p-3 rounded-lg border border-border/50 bg-muted/20">
+          <div className="space-y-4 p-4 rounded-xl border border-border/60 bg-muted/15">
             <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">
               New Tag
             </h3>
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <label
                   htmlFor="tag-name-input"
-                  className="text-[10px] font-medium text-muted-foreground"
+                  className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
                 >
                   Name
                 </label>
@@ -293,14 +293,14 @@ export default function TaxonomyManager({
                   value={tagName}
                   onChange={(e) => handleTagNameChange(e.target.value)}
                   placeholder="e.g. nextjs"
-                  className="h-8 w-full rounded border border-border bg-background px-2 text-xs outline-none focus:border-primary"
+                  className="h-10 w-full rounded-lg border border-border/85 bg-background px-3 text-xs outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
                 />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="tag-slug-input"
-                    className="text-[10px] font-medium text-muted-foreground"
+                    className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
                   >
                     Slug
                   </label>
@@ -311,9 +311,9 @@ export default function TaxonomyManager({
                         setTagManualSlug(false);
                         setTagSlug(slugify(tagName));
                       }}
-                      className="text-[9px] text-muted-foreground underline hover:text-foreground"
+                      className="text-[9px] font-semibold text-muted-foreground hover:text-foreground underline underline-offset-1"
                     >
-                      Auto
+                      Reset Auto
                     </button>
                   )}
                 </div>
@@ -326,7 +326,7 @@ export default function TaxonomyManager({
                     setTagSlug(e.target.value);
                   }}
                   placeholder="nextjs"
-                  className="h-8 w-full rounded border border-border bg-background px-2 font-mono text-xs outline-none focus:border-primary"
+                  className="h-10 w-full rounded-lg border border-border/85 bg-background px-3 font-mono text-xs outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
                 />
               </div>
             </div>
@@ -334,34 +334,34 @@ export default function TaxonomyManager({
               type="button"
               disabled={!tagName.trim() || !tagSlug.trim() || tagCreating}
               onClick={() => void handleCreate("tag")}
-              className="flex w-full items-center justify-center gap-1 rounded bg-primary py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/95 disabled:opacity-55 cursor-pointer"
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-2 text-xs font-bold text-primary-foreground hover:bg-primary/95 disabled:opacity-50 transition-all duration-150 cursor-pointer active:translate-y-px"
             >
               {tagCreating ? (
-                <Loader2 size={12} className="animate-spin" />
+                <Loader2 size={13} className="animate-spin" />
               ) : (
-                <Plus size={12} />
+                <Plus size={13} />
               )}
               Add Tag
             </button>
           </div>
 
           {/* List */}
-          <div className="max-h-96 overflow-y-auto divide-y divide-border/40">
+          <div className="max-h-96 overflow-y-auto divide-y divide-border/40 pr-1">
             {tags.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">
+              <p className="text-xs text-muted-foreground py-8 text-center">
                 No tags found.
               </p>
             ) : (
               tags.map((tag) => (
                 <div
                   key={tag.id}
-                  className="flex items-center justify-between py-2.5 first:pt-0 last:pb-0 group"
+                  className="flex items-center justify-between py-3 group"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-xs font-semibold text-foreground">
+                    <p className="truncate text-xs font-bold text-foreground">
                       #{tag.name}
                     </p>
-                    <p className="truncate font-mono text-[10px] text-muted-foreground mt-0.5">
+                    <p className="truncate font-mono text-[9px] text-muted-foreground/80 mt-1">
                       /{tag.slug}
                     </p>
                   </div>
@@ -369,7 +369,7 @@ export default function TaxonomyManager({
                     type="button"
                     disabled={deletingId === tag.id}
                     onClick={() => void handleDelete("tag", tag.id, tag.name)}
-                    className="p-1.5 text-muted-foreground hover:text-destructive rounded hover:bg-muted md:opacity-0 md:group-hover:opacity-100 transition-all cursor-pointer"
+                    className="p-1.5 text-muted-foreground/80 hover:text-destructive rounded-lg hover:bg-destructive/10 transition-all cursor-pointer opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                   >
                     <Trash2 size={13} />
                   </button>

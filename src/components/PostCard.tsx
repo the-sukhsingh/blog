@@ -27,31 +27,16 @@ export default function PostCard({
   const date = publishedAt ?? createdAt;
 
   return (
-    <article className="group overflow-hidden rounded-xl border border-border bg-card transition-colors duration-150 hover:border-primary/45">
-      {/* Cover image */}
-      {coverImage && (
-        <Link
-          href={`/posts/${slug}`}
-          className="block overflow-hidden bg-muted"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={coverImage}
-            alt={title}
-            className="h-48 w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-          />
-        </Link>
-      )}
-
-      <div className="p-5">
+    <article className="group grid grid-cols-1 md:grid-cols-4 gap-6 py-8 border-b border-border/40 last:border-b-0 items-start transition-colors duration-150">
+      <div className="md:col-span-3 space-y-3">
         {/* Categories */}
         {categories.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/categories/${cat.slug}`}
-                className="rounded bg-muted px-2 py-0.5 text-[10px] font-medium text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="rounded-full bg-muted/95 hover:bg-primary hover:text-primary-foreground px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/90 transition-all duration-200"
               >
                 {cat.name}
               </Link>
@@ -60,55 +45,67 @@ export default function PostCard({
         )}
 
         {/* Title */}
-        <h2 className="mb-2 text-lg font-bold leading-snug tracking-tight">
-          <Link
-            href={`/posts/${slug}`}
-            className="hover:text-primary transition-colors"
-          >
+        <h2 className="text-xl md:text-2xl font-bold leading-tight tracking-tight text-foreground group-hover:text-primary transition-colors">
+          <Link href={`/posts/${slug}`}>
             {title}
           </Link>
         </h2>
 
         {/* Excerpt */}
         {excerpt && (
-          <p className="mb-4 line-clamp-2 text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground/95 leading-relaxed line-clamp-2 max-w-2xl">
             {excerpt}
           </p>
         )}
 
-        {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground border-t border-border/40 pt-3">
-          {author.name && (
-            <span className="flex items-center gap-1">
-              <User size={12} />
-              {author.name}
-            </span>
-          )}
-          <span className="flex items-center gap-1">
-            <Calendar size={12} />
+        {/* Meta & Tags */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-[11px] text-muted-foreground/80 select-none">
+          <span className="font-semibold text-foreground/85">
+            By {author.name ?? "Staff Writer"}
+          </span>
+          <span className="h-3 w-px bg-border/80" />
+          <span className="font-mono">
             {new Date(date).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
               year: "numeric",
             })}
           </span>
+          {tags.length > 0 && (
+            <>
+              <span className="h-3 w-px bg-border/80" />
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag.slug}
+                    href={`/tags/${tag.slug}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    #{tag.name}
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-
-        {/* Tags */}
-        {tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {tags.map((tag) => (
-              <Link
-                key={tag.slug}
-                href={`/tags/${tag.slug}`}
-                className="rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-              >
-                #{tag.name}
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
+
+      {/* Image */}
+      {coverImage && (
+        <div className="md:col-span-1 order-first md:order-last">
+          <Link
+            href={`/posts/${slug}`}
+            className="block overflow-hidden rounded-xl bg-muted/30 aspect-[16/10] border border-border/40"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={coverImage}
+              alt={title}
+              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]"
+            />
+          </Link>
+        </div>
+      )}
     </article>
   );
 }

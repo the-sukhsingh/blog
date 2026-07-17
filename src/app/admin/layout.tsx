@@ -1,5 +1,14 @@
+import {
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  MessageSquare,
+  Tag,
+  Users,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ModeToggle } from "@/components/theme/ThemeToggle";
 
 export const metadata: Metadata = {
   title: {
@@ -10,11 +19,11 @@ export const metadata: Metadata = {
 };
 
 const navLinks = [
-  { href: "/admin", label: "Dashboard", icon: "⊞" },
-  { href: "/admin/posts", label: "Posts", icon: "✎" },
-  { href: "/admin/taxonomy", label: "Taxonomy", icon: "⊕" },
-  { href: "/admin/comments", label: "Comments", icon: "✉" },
-  { href: "/admin/users", label: "Users", icon: "👤" },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/posts", label: "Posts", icon: FileText },
+  { href: "/admin/taxonomy", label: "Taxonomy", icon: Tag },
+  { href: "/admin/comments", label: "Comments", icon: MessageSquare },
+  { href: "/admin/users", label: "Users", icon: Users },
 ];
 
 export default function AdminLayout({
@@ -23,51 +32,54 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-full">
+    <div className="flex min-h-screen bg-muted/20">
       {/* Sidebar */}
-      <aside className="w-60 shrink-0 border-r border-border bg-muted/40">
-        <div className="sticky top-0 flex h-screen flex-col p-4">
+      <aside className="w-64 shrink-0 border-r border-border/80 bg-background/50 backdrop-blur-sm">
+        <div className="sticky top-0 flex h-screen flex-col p-6">
           {/* Brand */}
           <Link
             href="/admin"
-            className="mb-8 flex items-center gap-2 text-lg font-semibold"
+            className="mb-10 flex items-center gap-2.5 text-lg font-bold tracking-tight select-none"
           >
-            <span className="rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
-              CMS
+            <span className="font-heading">
+              
             </span>
-            Admin
           </Link>
 
           {/* Navigation */}
-          <nav className="flex flex-1 flex-col gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <span className="text-base">{link.icon}</span>
-                {link.label}
-              </Link>
-            ))}
+          <nav className="flex flex-1 flex-col gap-1.5">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-xs font-semibold text-muted-foreground transition-all duration-150 hover:bg-muted/80 hover:text-foreground"
+                >
+                  <Icon size={14} className="opacity-80" />
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Sign out */}
-          <div className="border-t border-border pt-4">
+          {/* Sign out and Mode Switcher */}
+          <div className="border-t border-border/60 pt-5 flex items-center justify-between gap-2">
             <a
               href="/api/auth/signout"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              className="flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-xs font-semibold text-muted-foreground transition-all duration-150 hover:bg-destructive/10 hover:text-destructive flex-1"
             >
-              <span>↩</span>
+              <LogOut size={14} className="opacity-80" />
               Sign Out
             </a>
+            <ModeToggle />
           </div>
         </div>
       </aside>
 
       {/* Main content */}
       <div className="flex flex-1 flex-col">
-        <main className="flex-1 p-8">{children}</main>
+        <main className="flex-1 max-w-6xl w-full p-6">{children}</main>
       </div>
     </div>
   );
