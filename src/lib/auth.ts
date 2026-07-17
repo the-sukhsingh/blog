@@ -37,11 +37,16 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.role = (user as { role?: string }).role;
+      if (user) {
+        token.id = user.id;
+        token.role = (user as { role?: string }).role;
+      }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
+        // token.sub is auto-set by NextAuth from user.id; token.id is our custom field
+        (session.user as { id?: string }).id = (token.id ?? token.sub) as string | undefined;
         (session.user as { role?: string }).role = token.role as
           | string
           | undefined;

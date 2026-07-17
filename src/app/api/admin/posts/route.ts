@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getPlainTextFromJSON } from "@/lib/editor";
 
 // GET /api/admin/posts — list all posts (drafts + published)
 export async function GET(_request: NextRequest) {
@@ -18,7 +19,10 @@ export async function GET(_request: NextRequest) {
       slug: true,
       status: true,
       createdAt: true,
+      publishedAt: true,
       author: { select: { name: true } },
+      categories: { select: { id: true, name: true, slug: true } },
+      tags: { select: { id: true, name: true, slug: true } },
     },
   });
 
@@ -34,16 +38,42 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
 
-  // TODO: validate body with zod
+  const { title, slug, content, excerpt, coverImage, status, categoryIds, tagIds } = body;
+
+  if (!title || !slug) {
+    return NextResponse.json({ error: "Title and slug are required" }, { status: 400 });
+  }
+
+  const authorId = (session.user as { id?: string }).id;
+  if (!authorId) {
+    return NextResponse.json(
+      { error: "Session is missing user ID. Please sign out and sign in again." },
+      { status: 401 },
+    );
+  }
+
   const post = await prisma.post.create({
     data: {
-      title: body.title,
-      slug: body.slug,
-      content: body.content ?? "",
-      excerpt: body.excerpt ?? "",
-      coverImage: body.coverImage ?? null,
-      status: body.status ?? "DRAFT",
-      authorId: (session.user as { id?: string }).id as string,
+      title,
+      slug,
+      content: content ?? { type: "doc", content: [] },
+      contentText: getPlainTextFromJSON(content ?? { type: "doc", content: [] }),
+      excerpt: excerpt ?? "",
+      coverImage: coverImage ?? null,
+      status: status ?? "DRAFT",
+      publishedAt: status === "PUBLISHED" ? new Date() : null,
+      authorId,
+      categories: categoryIds?.length
+        ? { connect: (categoryIds as string[]).map((id) => ({ id })) }
+        : undefined,
+      tags: tagIds?.length
+        ? { connect: (tagIds as string[]).map((id) => ({ id })) }
+        : undefined,
+    },
+    include: {
+      categories: true,
+      tags: true,
+      author: { select: { name: true } },
     },
   });
 

@@ -27,7 +27,21 @@ async function main() {
     create: {
       title: "Hello World",
       slug: "hello-world",
-      content: "<p>This is your first post.</p>",
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "This is your first post.",
+              },
+            ],
+          },
+        ],
+      } as any,
+      contentText: "This is your first post.",
       excerpt: "A sample post to get things started.",
       status: "PUBLISHED",
       publishedAt: new Date(),
