@@ -1,11 +1,11 @@
-import { generateHTML } from "@tiptap/html";
-import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import { generateHTML } from "@tiptap/html";
+import StarterKit from "@tiptap/starter-kit";
 
 export function generateHtmlFromJSON(json: any) {
   if (!json) return "";
-  
+
   // Tiptap generateHTML expects a JSON object. If a string is passed, try to parse it.
   let doc = json;
   if (typeof json === "string") {
@@ -40,7 +40,7 @@ export function generateHtmlFromJSON(json: any) {
 
 export function getPlainTextFromJSON(json: any): string {
   if (!json) return "";
-  
+
   let doc = json;
   if (typeof json === "string") {
     try {

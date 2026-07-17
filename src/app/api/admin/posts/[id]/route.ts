@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { getPlainTextFromJSON } from "@/lib/editor";
+import { prisma } from "@/lib/prisma";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -56,7 +56,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
         publishedAt: body.status === "PUBLISHED" ? new Date() : null,
       }),
       ...(body.categoryIds !== undefined && {
-        categories: { set: (body.categoryIds as string[]).map((cid) => ({ id: cid })) },
+        categories: {
+          set: (body.categoryIds as string[]).map((cid) => ({ id: cid })),
+        },
       }),
       ...(body.tagIds !== undefined && {
         tags: { set: (body.tagIds as string[]).map((tid) => ({ id: tid })) },

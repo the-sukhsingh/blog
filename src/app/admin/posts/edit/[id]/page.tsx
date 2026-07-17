@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import PostForm from "@/components/editor/PostForm";
+import { prisma } from "@/lib/prisma";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -9,7 +9,10 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const post = await prisma.post.findUnique({ where: { id }, select: { title: true } });
+  const post = await prisma.post.findUnique({
+    where: { id },
+    select: { title: true },
+  });
   return { title: post ? `Edit — ${post.title}` : "Edit Post" };
 }
 

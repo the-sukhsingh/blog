@@ -1,7 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 
 export default function LoginForm() {
@@ -39,7 +39,7 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm"
+      className="space-y-4 rounded-xl border border-border bg-card p-6"
     >
       {error && (
         <div
@@ -62,7 +62,7 @@ export default function LoginForm() {
           autoComplete="email"
           placeholder="you@example.com"
           disabled={loading}
-          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:opacity-50"
         />
       </div>
 
@@ -78,7 +78,7 @@ export default function LoginForm() {
           autoComplete="current-password"
           placeholder="••••••••"
           disabled={loading}
-          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+          className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20 disabled:opacity-50"
         />
       </div>
 
@@ -86,7 +86,7 @@ export default function LoginForm() {
         id="sign-in-btn"
         type="submit"
         disabled={loading}
-        className="h-10 w-full rounded-md bg-primary text-sm font-semibold text-primary-foreground transition-opacity hover:bg-primary/90 disabled:opacity-60"
+        className="h-10 w-full rounded-md bg-primary text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-60 cursor-pointer active:translate-y-px"
       >
         {loading ? "Signing in…" : "Sign In"}
       </button>

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { ImageIcon, Loader2, Settings2, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { ImageIcon, Loader2, X, Settings2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import TaxonomyDrawer from "./TaxonomyDrawer";
 
 const TipTapEditor = dynamic(() => import("./TipTapEditor"), { ssr: false });
@@ -47,16 +47,16 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
   const [content, setContent] = useState<any>(initialValues?.content ?? null);
   const [excerpt, setExcerpt] = useState(initialValues?.excerpt ?? "");
   const [coverImage, setCoverImage] = useState<string | null>(
-    initialValues?.coverImage ?? null
+    initialValues?.coverImage ?? null,
   );
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(
-    initialValues?.status ?? "DRAFT"
+    initialValues?.status ?? "DRAFT",
   );
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialValues?.categoryIds ?? []
+    initialValues?.categoryIds ?? [],
   );
   const [selectedTags, setSelectedTags] = useState<string[]>(
-    initialValues?.tagIds ?? []
+    initialValues?.tagIds ?? [],
   );
 
   // Taxonomy lists
@@ -82,7 +82,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
         setCategories(data.categories ?? []);
         setTags(data.tags ?? []);
       })
-      .catch(() => {/* ignore */});
+      .catch(() => {
+        /* ignore */
+      });
   }, []);
 
   // Auto-slug from title
@@ -98,11 +100,15 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
   const handleTaxonomyCreated = (type: "category" | "tag", item: Taxonomy) => {
     if (type === "category") {
-      setCategories((prev) => [...prev, item].sort((a, b) => a.name.localeCompare(b.name)));
+      setCategories((prev) =>
+        [...prev, item].sort((a, b) => a.name.localeCompare(b.name)),
+      );
       // Auto-select the newly created category
       setSelectedCategories((prev) => [...prev, item.id]);
     } else {
-      setTags((prev) => [...prev, item].sort((a, b) => a.name.localeCompare(b.name)));
+      setTags((prev) =>
+        [...prev, item].sort((a, b) => a.name.localeCompare(b.name)),
+      );
       setSelectedTags((prev) => [...prev, item.id]);
     }
   };
@@ -128,8 +134,11 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json() as { url?: string };
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = (await res.json()) as { url?: string };
       if (data.url) {
         setCoverImage(data.url);
       } else {
@@ -146,13 +155,13 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
   const toggleCategory = (id: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
     );
   };
 
   const toggleTag = (id: string) => {
     setSelectedTags((prev) =>
-      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id],
     );
   };
 
@@ -190,7 +199,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
       });
 
       if (!res.ok) {
-        const err = await res.json() as { error?: string };
+        const err = (await res.json()) as { error?: string };
         throw new Error(err.error ?? "Failed to save post.");
       }
 
@@ -310,13 +319,18 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
             <div className="rounded-lg border border-border bg-card p-4">
               <h2 className="mb-3 text-sm font-semibold">Publish</h2>
               <div className="mb-3 space-y-1.5">
-                <label htmlFor="post-status" className="text-xs text-muted-foreground">
+                <label
+                  htmlFor="post-status"
+                  className="text-xs text-muted-foreground"
+                >
                   Status
                 </label>
                 <select
                   id="post-status"
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as "DRAFT" | "PUBLISHED")}
+                  onChange={(e) =>
+                    setStatus(e.target.value as "DRAFT" | "PUBLISHED")
+                  }
                   className="h-9 w-full rounded-md border border-border bg-background px-2 text-sm"
                 >
                   <option value="DRAFT">Draft</option>
@@ -393,7 +407,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
               {categories.length === 0 ? (
                 <div className="rounded-md border border-dashed border-border p-3 text-center">
-                  <p className="text-xs text-muted-foreground">No categories yet.</p>
+                  <p className="text-xs text-muted-foreground">
+                    No categories yet.
+                  </p>
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(true)}

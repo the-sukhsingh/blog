@@ -1,26 +1,26 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
-import { useCallback } from "react";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import {
   Bold,
-  Italic,
-  Strikethrough,
   Code,
   Heading1,
   Heading2,
   Heading3,
+  ImageIcon,
+  Italic,
+  Link2,
   List,
   ListOrdered,
-  Quote,
-  Link2,
-  ImageIcon,
-  Undo2,
-  Redo2,
   Minus,
+  Quote,
+  Redo2,
+  Strikethrough,
+  Undo2,
 } from "lucide-react";
+import { useCallback } from "react";
 
 interface TipTapEditorProps {
   content?: any;
@@ -45,9 +45,7 @@ function ToolbarButton({
       title={title}
       onClick={onClick}
       className={`flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-accent hover:text-accent-foreground ${
-        isActive
-          ? "bg-accent text-accent-foreground"
-          : "text-muted-foreground"
+        isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
       }`}
     >
       {children}
@@ -120,7 +118,7 @@ export default function TipTapEditor({
           method: "POST",
           body: formData,
         });
-        const data = await res.json() as { url?: string };
+        const data = (await res.json()) as { url?: string };
         if (data.url) {
           editor.chain().focus().setImage({ src: data.url }).run();
         } else {

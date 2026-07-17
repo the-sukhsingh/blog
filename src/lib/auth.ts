@@ -46,7 +46,9 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         // token.sub is auto-set by NextAuth from user.id; token.id is our custom field
-        (session.user as { id?: string }).id = (token.id ?? token.sub) as string | undefined;
+        (session.user as { id?: string }).id = (token.id ?? token.sub) as
+          | string
+          | undefined;
         (session.user as { role?: string }).role = token.role as
           | string
           | undefined;

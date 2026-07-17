@@ -194,22 +194,41 @@
 .prose {
   @apply text-foreground leading-7;
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold tracking-tight text-foreground;
   }
-  h1 { @apply text-3xl mt-10 mb-4; }
-  h2 { @apply text-2xl mt-8 mb-3; }
-  h3 { @apply text-xl mt-6 mb-2; }
+  h1 {
+    @apply text-3xl mt-10 mb-4;
+  }
+  h2 {
+    @apply text-2xl mt-8 mb-3;
+  }
+  h3 {
+    @apply text-xl mt-6 mb-2;
+  }
 
-  p { @apply mb-4 leading-7; }
+  p {
+    @apply mb-4 leading-7;
+  }
 
   a {
     @apply text-primary underline underline-offset-2 hover:text-primary/80 transition-colors;
   }
 
-  strong { @apply font-semibold; }
-  em { @apply italic; }
-  s { @apply line-through; }
+  strong {
+    @apply font-semibold;
+  }
+  em {
+    @apply italic;
+  }
+  s {
+    @apply line-through;
+  }
 
   ul {
     @apply mb-4 list-disc pl-6 space-y-1;
@@ -217,7 +236,9 @@
   ol {
     @apply mb-4 list-decimal pl-6 space-y-1;
   }
-  li { @apply leading-7; }
+  li {
+    @apply leading-7;
+  }
 
   blockquote {
     @apply my-6 border-l-4 border-primary/40 pl-4 italic text-muted-foreground;
@@ -243,25 +264,39 @@
   }
 
   /* Remove top margin from first element */
-  > *:first-child { @apply mt-0; }
+  > *:first-child {
+    @apply mt-0;
+  }
 }
 
 /* ─── TipTap editor inner content ─── */
 .tiptap {
   outline: none;
 
-  p { @apply mb-3 leading-7; }
+  p {
+    @apply mb-3 leading-7;
+  }
   p.is-empty::before {
     content: attr(data-placeholder);
     @apply pointer-events-none float-left h-0 text-muted-foreground;
   }
 
-  h1 { @apply text-2xl font-bold mb-3; }
-  h2 { @apply text-xl font-bold mb-2; }
-  h3 { @apply text-lg font-bold mb-2; }
+  h1 {
+    @apply text-2xl font-bold mb-3;
+  }
+  h2 {
+    @apply text-xl font-bold mb-2;
+  }
+  h3 {
+    @apply text-lg font-bold mb-2;
+  }
 
-  ul { @apply list-disc pl-5 mb-3 space-y-1; }
-  ol { @apply list-decimal pl-5 mb-3 space-y-1; }
+  ul {
+    @apply list-disc pl-5 mb-3 space-y-1;
+  }
+  ol {
+    @apply list-decimal pl-5 mb-3 space-y-1;
+  }
 
   blockquote {
     @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
@@ -273,7 +308,9 @@
 
   pre {
     @apply rounded-lg bg-muted p-4 my-4 overflow-x-auto;
-    code { @apply bg-transparent p-0; }
+    code {
+      @apply bg-transparent p-0;
+    }
   }
 
   hr {

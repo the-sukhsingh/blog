@@ -1,34 +1,36 @@
 import type { Metadata } from "next";
+import CommentList from "@/components/admin/CommentList";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Comments",
 };
 
-export default function CommentsPage() {
+export default async function CommentsPage() {
+  const comments = await prisma.comment.findMany({
+    orderBy: { createdAt: "desc" },
+    include: {
+      post: {
+        select: {
+          title: true,
+          slug: true,
+        },
+      },
+    },
+  });
+
   return (
-    <div>
-      <h1 className="mb-2 text-2xl font-bold tracking-tight">Comments</h1>
-      <p className="mb-8 text-sm text-muted-foreground">
-        Approve or delete public comments submitted on posts.
-      </p>
-
-      {/* Filter tabs */}
-      <div className="mb-4 flex gap-2 border-b border-border">
-        {["Pending", "Approved", "All"].map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            className="border-b-2 border-transparent px-3 pb-2 text-sm font-medium text-muted-foreground hover:text-foreground data-[active]:border-primary data-[active]:text-foreground"
-          >
-            {tab}
-          </button>
-        ))}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Comments
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Approve or delete public comments submitted on your publications.
+        </p>
       </div>
 
-      {/* Comments list */}
-      <div className="space-y-3">
-        <p className="text-sm text-muted-foreground">No comments to moderate.</p>
-      </div>
+      <CommentList initialComments={comments as any} />
     </div>
   );
 }

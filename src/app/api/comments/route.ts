@@ -7,13 +7,19 @@ export async function POST(request: NextRequest) {
   const { postId, authorName, authorEmail, content } = body;
 
   if (!postId || !authorName || !authorEmail || !content) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 },
+    );
   }
 
   // Basic email format check
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(authorEmail)) {
-    return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid email address" },
+      { status: 400 },
+    );
   }
 
   if (content.trim().length < 3 || content.trim().length > 2000) {

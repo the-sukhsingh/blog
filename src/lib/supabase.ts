@@ -7,7 +7,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
   // Non-fatal in dev — upload route falls back to base64
   if (process.env.NODE_ENV === "production") {
     throw new Error(
-      "Missing SUPABASE_URL or SUPABASE_SERVICE_KEY environment variables."
+      "Missing SUPABASE_URL or SUPABASE_SERVICE_KEY environment variables.",
     );
   }
 }

@@ -25,11 +25,14 @@ export default function AdminLoginPage() {
           Suspense is required here because LoginForm calls useSearchParams(),
           which opts it into dynamic rendering during SSR.
         */}
-        <Suspense fallback={<div className="h-56 rounded-xl border border-border bg-card" />}>
+        <Suspense
+          fallback={
+            <div className="h-56 rounded-xl border border-border bg-card" />
+          }
+        >
           <LoginForm />
         </Suspense>
       </div>
     </div>
   );
 }
-

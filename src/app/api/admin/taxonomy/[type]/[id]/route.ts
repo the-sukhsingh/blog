@@ -1,5 +1,5 @@
-import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -24,5 +24,8 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
     return new NextResponse(null, { status: 204 });
   }
 
-  return NextResponse.json({ error: "Invalid type. Use 'category' or 'tag'." }, { status: 400 });
+  return NextResponse.json(
+    { error: "Invalid type. Use 'category' or 'tag'." },
+    { status: 400 },
+  );
 }

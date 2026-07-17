@@ -1,48 +1,29 @@
 import type { Metadata } from "next";
+import TaxonomyManager from "@/components/admin/TaxonomyManager";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Taxonomy",
 };
 
-export default function TaxonomyPage() {
+export default async function TaxonomyPage() {
+  const [categories, tags] = await Promise.all([
+    prisma.category.findMany({ orderBy: { name: "asc" } }),
+    prisma.tag.findMany({ orderBy: { name: "asc" } }),
+  ]);
+
   return (
-    <div>
-      <h1 className="mb-2 text-2xl font-bold tracking-tight">Taxonomy</h1>
-      <p className="mb-8 text-sm text-muted-foreground">
-        Manage categories and tags for your posts.
-      </p>
-
-      <div className="grid grid-cols-2 gap-6">
-        {/* Categories */}
-        <section className="rounded-lg border border-border bg-card p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Categories</h2>
-            <button
-              type="button"
-              className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              + Add
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            No categories yet.
-          </p>
-        </section>
-
-        {/* Tags */}
-        <section className="rounded-lg border border-border bg-card p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Tags</h2>
-            <button
-              type="button"
-              className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              + Add
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground">No tags yet.</p>
-        </section>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Taxonomy
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Manage categories and tags to organize your articles.
+        </p>
       </div>
+
+      <TaxonomyManager initialCategories={categories} initialTags={tags} />
     </div>
   );
 }

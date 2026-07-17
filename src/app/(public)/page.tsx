@@ -12,4 +12,3 @@ import { notFound } from "next/navigation";
 export default function PublicHomePlaceholder() {
   notFound();
 }
-

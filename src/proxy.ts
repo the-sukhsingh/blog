@@ -1,6 +1,6 @@
-import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -32,4 +32,3 @@ export const config = {
   // Exclude /api/auth/* so NextAuth can handle sign-in/sign-out flows without being blocked
   matcher: ["/admin/:path*", "/api/admin/:path*"],
 };
-

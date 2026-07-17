@@ -1,5 +1,6 @@
-import { getServerSession } from "next-auth";
+import bcrypt from "bcryptjs";
 import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -35,19 +36,67 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await request.json();
+  try {
+    const body = await request.json();
+    const { name, email, password, role: userRole } = body;
 
-  // Password hashing will be done in the implementation layer
-  // TODO: validate and hash password before storing
-  const user = await prisma.user.create({
-    data: {
-      name: body.name,
-      email: body.email,
-      passwordHash: body.passwordHash, // caller must hash before sending
-      role: body.role ?? "EDITOR",
-    },
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
-  });
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Email and password are required" },
+        { status: 400 },
+      );
+    }
 
-  return NextResponse.json(user, { status: 201 });
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters long" },
+        { status: 400 },
+      );
+    }
+
+    // Check email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 },
+      );
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "A user with this email already exists" },
+        { status: 400 },
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        name: name || null,
+        email: email.toLowerCase().trim(),
+        passwordHash,
+        role: userRole === "ADMIN" ? "ADMIN" : "EDITOR",
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return NextResponse.json(user, { status: 201 });
+  } catch (_err) {
+    return NextResponse.json(
+      { error: "Could not create user" },
+      { status: 500 },
+    );
+  }
 }

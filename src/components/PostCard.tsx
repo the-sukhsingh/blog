@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Calendar, User } from "lucide-react";
+import Link from "next/link";
 
 interface PostCardProps {
   title: string;
@@ -27,15 +27,18 @@ export default function PostCard({
   const date = publishedAt ?? createdAt;
 
   return (
-    <article className="group overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-md">
+    <article className="group overflow-hidden rounded-xl border border-border bg-card transition-colors duration-150 hover:border-primary/45">
       {/* Cover image */}
       {coverImage && (
-        <Link href={`/posts/${slug}`} className="block overflow-hidden">
+        <Link
+          href={`/posts/${slug}`}
+          className="block overflow-hidden bg-muted"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={coverImage}
             alt={title}
-            className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-48 w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
           />
         </Link>
       )}
@@ -43,12 +46,12 @@ export default function PostCard({
       <div className="p-5">
         {/* Categories */}
         {categories.length > 0 && (
-          <div className="mb-2 flex flex-wrap gap-1.5">
+          <div className="mb-3 flex flex-wrap gap-1.5">
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/categories/${cat.slug}`}
-                className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
+                className="rounded bg-muted px-2 py-0.5 text-[10px] font-medium text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 {cat.name}
               </Link>
@@ -57,7 +60,7 @@ export default function PostCard({
         )}
 
         {/* Title */}
-        <h2 className="mb-2 text-xl font-bold leading-snug tracking-tight">
+        <h2 className="mb-2 text-lg font-bold leading-snug tracking-tight">
           <Link
             href={`/posts/${slug}`}
             className="hover:text-primary transition-colors"
@@ -68,13 +71,13 @@ export default function PostCard({
 
         {/* Excerpt */}
         {excerpt && (
-          <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
+          <p className="mb-4 line-clamp-2 text-sm text-muted-foreground leading-relaxed">
             {excerpt}
           </p>
         )}
 
         {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground border-t border-border/40 pt-3">
           {author.name && (
             <span className="flex items-center gap-1">
               <User size={12} />
@@ -98,7 +101,7 @@ export default function PostCard({
               <Link
                 key={tag.slug}
                 href={`/tags/${tag.slug}`}
-                className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                className="rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground hover:border-primary hover:text-primary transition-colors"
               >
                 #{tag.name}
               </Link>

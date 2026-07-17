@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { getPlainTextFromJSON } from "@/lib/editor";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/admin/posts — list all posts (drafts + published)
 export async function GET(_request: NextRequest) {
@@ -38,16 +38,30 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
 
-  const { title, slug, content, excerpt, coverImage, status, categoryIds, tagIds } = body;
+  const {
+    title,
+    slug,
+    content,
+    excerpt,
+    coverImage,
+    status,
+    categoryIds,
+    tagIds,
+  } = body;
 
   if (!title || !slug) {
-    return NextResponse.json({ error: "Title and slug are required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Title and slug are required" },
+      { status: 400 },
+    );
   }
 
   const authorId = (session.user as { id?: string }).id;
   if (!authorId) {
     return NextResponse.json(
-      { error: "Session is missing user ID. Please sign out and sign in again." },
+      {
+        error: "Session is missing user ID. Please sign out and sign in again.",
+      },
       { status: 401 },
     );
   }
@@ -57,7 +71,9 @@ export async function POST(request: NextRequest) {
       title,
       slug,
       content: content ?? { type: "doc", content: [] },
-      contentText: getPlainTextFromJSON(content ?? { type: "doc", content: [] }),
+      contentText: getPlainTextFromJSON(
+        content ?? { type: "doc", content: [] },
+      ),
       excerpt: excerpt ?? "",
       coverImage: coverImage ?? null,
       status: status ?? "DRAFT",

@@ -1,60 +1,57 @@
+import { ShieldAlert } from "lucide-react";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import UserManager from "@/components/admin/UserManager";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Users",
 };
 
-export default function UsersPage() {
-  return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Users</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage admin and editor accounts. Only admins can access this page.
-          </p>
+export default async function UsersPage() {
+  const session = await getServerSession(authOptions);
+  const role = (session?.user as { role?: string })?.role;
+
+  if (role !== "ADMIN") {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center text-center p-6">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-destructive/10 text-destructive border border-destructive/20 mb-4">
+          <ShieldAlert size={20} />
         </div>
-        <button
-          type="button"
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          + Invite User
-        </button>
+        <h1 className="text-xl font-bold text-foreground">Access Denied</h1>
+        <p className="mt-2 text-sm text-muted-foreground max-w-sm leading-relaxed">
+          You must have administrator privileges to view or manage user
+          accounts. Please contact your administrator.
+        </p>
+      </div>
+    );
+  }
+
+  const users = await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Users
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Create and manage system user accounts for content editors and
+          administrators.
+        </p>
       </div>
 
-      <div className="rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="border-b border-border bg-muted/40">
-            <tr>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Name
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Email
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Role
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Joined
-              </th>
-              <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td
-                colSpan={5}
-                className="px-4 py-8 text-center text-muted-foreground"
-              >
-                No users found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <UserManager initialUsers={users as any} />
     </div>
   );
 }

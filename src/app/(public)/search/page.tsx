@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
-import PostCard from "@/components/PostCard";
 import { Search } from "lucide-react";
+import type { Metadata } from "next";
+import PostCard from "@/components/PostCard";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -46,27 +46,36 @@ export default async function SearchPage({ searchParams }: Props) {
     : [];
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="mb-4 text-4xl font-bold tracking-tight">Search</h1>
+    <div className="space-y-8">
+      <div className="border-b border-border pb-8 pt-2">
+        <h1 className="font-sans text-4xl font-black tracking-tight text-foreground">
+          Search
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+          Search for articles, categories, or tag names across our archives.
+        </p>
+      </div>
+
+      <div className="max-w-2xl">
         <form method="GET" action="/search">
-          <div className="relative flex items-center">
-            <Search
-              size={16}
-              className="pointer-events-none absolute left-3 text-muted-foreground"
-            />
-            <input
-              type="search"
-              name="q"
-              id="search-input"
-              defaultValue={query}
-              placeholder="Search articles, categories, tags…"
-              className="h-11 w-full rounded-lg border border-border bg-background pl-9 pr-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              autoFocus
-            />
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search
+                size={15}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+              />
+              <input
+                type="search"
+                name="q"
+                id="search-input"
+                defaultValue={query}
+                placeholder="Search by keywords, tags..."
+                className="h-10 w-full rounded-lg border border-border bg-background pl-10 pr-4 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              />
+            </div>
             <button
               type="submit"
-              className="ml-2 h-11 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              className="h-10 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 active:translate-y-px transition-all cursor-pointer"
             >
               Search
             </button>
@@ -79,13 +88,22 @@ export default async function SearchPage({ searchParams }: Props) {
           <p className="mb-6 text-sm text-muted-foreground">
             {posts.length > 0 ? (
               <>
-                Found <span className="font-medium text-foreground">{posts.length}</span> result
+                Found{" "}
+                <span className="font-medium text-foreground">
+                  {posts.length}
+                </span>{" "}
+                result
                 {posts.length !== 1 ? "s" : ""} for{" "}
-                <span className="font-medium text-foreground">&ldquo;{query}&rdquo;</span>
+                <span className="font-medium text-foreground">
+                  &ldquo;{query}&rdquo;
+                </span>
               </>
             ) : (
               <>
-                No results for <span className="font-medium text-foreground">&ldquo;{query}&rdquo;</span>
+                No results for{" "}
+                <span className="font-medium text-foreground">
+                  &ldquo;{query}&rdquo;
+                </span>
               </>
             )}
           </p>

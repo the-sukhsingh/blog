@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/PostCard";
+import { prisma } from "@/lib/prisma";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -42,15 +42,18 @@ export default async function TagPage({ params }: Props) {
 
   return (
     <div>
-      <div className="mb-10">
-        <p className="mb-1 text-sm font-medium text-primary uppercase tracking-wider">
-          Tag
-        </p>
-        <h1 className="mb-2 text-4xl font-bold tracking-tight">
+      <div className="border-b border-border pb-8 pt-2 mb-10">
+        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-2">
+          <span>Archives</span>
+          <span>/</span>
+          <span className="text-foreground">Tag</span>
+        </div>
+        <h1 className="text-4xl font-black tracking-tight text-foreground">
           #{tag.name}
         </h1>
-        <p className="text-muted-foreground">
-          {tag.posts.length} post{tag.posts.length !== 1 ? "s" : ""} with this tag
+        <p className="mt-2 text-sm text-muted-foreground">
+          {tag.posts.length} article{tag.posts.length !== 1 ? "s" : ""} tagged
+          with #{tag.name}.
         </p>
       </div>
 
