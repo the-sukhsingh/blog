@@ -570,7 +570,7 @@ export const Clock = ({
   );
 };
 
-export const Link = ({
+export const LinkIcon = ({
   className,
   ...props
 }: SVGProps<SVGSVGElement> & {

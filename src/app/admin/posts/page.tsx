@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PostListTable from "@/components/admin/PostListTable";
 import { prisma } from "@/lib/prisma";
+import { AddSquare } from "@/lib/icons";
 
 export const metadata: Metadata = {
   title: "Posts",
@@ -36,9 +37,10 @@ export default async function AdminPostsPage() {
         </div>
         <Link
           href="/admin/posts/new"
-          className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors active:translate-y-px cursor-pointer"
+          className="rounded-lg bg-primary pl-4 pr-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px flex justify-center items-center gap-2"
         >
-          + New Post
+          <AddSquare className="**:stroke-current shrink-0 **:stroke-2" />
+          New Post
         </Link>
       </div>
 

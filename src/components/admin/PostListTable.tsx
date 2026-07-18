@@ -2,8 +2,26 @@
 
 import { Edit2, ExternalLink, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { noti } from "noti-toast";
 import { useState } from "react";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { EditPen, LinkIcon, TrashCan } from "@/lib/icons";
+import { Badge } from "../ui/badge";
 
 interface Post {
   id: string;
@@ -22,7 +40,6 @@ interface PostListTableProps {
 }
 
 export default function PostListTable({ initialPosts }: PostListTableProps) {
-  const router = useRouter();
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -31,31 +48,41 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string, title: string) => {
-    if (
-      !window.confirm(
-        `Are you sure you want to delete "${title}"? This action cannot be undone.`,
-      )
-    ) {
-      return;
-    }
+    noti.custom({
+      id: `delete-id-${id}`,
+      title: `Are you sure you want to delete "${title}"?`,
+      description: "This action cannot be undone.",
+      fillColor: "var(--color-muted)",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          setDeletingId(id);
+          try {
+            const res = await fetch(`/api/admin/posts/${id}`, {
+              method: "DELETE",
+            });
 
-    setDeletingId(id);
-    try {
-      const res = await fetch(`/api/admin/posts/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to delete post");
-      }
-
-      setPosts((prev) => prev.filter((p) => p.id !== id));
-      router.refresh();
-    } catch (_err) {
-      alert("Error: Could not delete the post.");
-    } finally {
-      setDeletingId(null);
-    }
+            if (!res.ok) {
+              throw new Error("Failed to delete post");
+            }
+            setPosts((prev) => prev.filter((p) => p.id !== id));
+            noti.update(`delete-id-${id}`, {
+              type: "success",
+              title: "Deleted Successfully!",
+              description: "The post has been deleted successfully.",
+            });
+          } catch (_err) {
+            noti.update(`delete-id-${id}`, {
+              type: "error",
+              title: "Error",
+              description: "Failed to delete post.",
+            });
+          } finally {
+            setDeletingId(null);
+          }
+        },
+      },
+    });
   };
 
   const filteredPosts = posts.filter((post) => {
@@ -68,6 +95,12 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
 
     return matchesSearch && matchesStatus;
   });
+
+  const items = [
+    { label: "All Statuses", value: "ALL" },
+    { label: "Published", value: "PUBLISHED" },
+    { label: "Draft", value: "DRAFT" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -94,47 +127,61 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
           >
             Status
           </label>
-          <select
+
+          <Select
             id="admin-status-filter"
+            items={items}
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="h-10 rounded-xl border border-border/85 bg-background px-4 py-1 text-xs font-semibold outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
+            onValueChange={(val) =>
+              setStatusFilter(val as "ALL" | "PUBLISHED" | "DRAFT")
+            }
           >
-            <option value="ALL">All Statuses</option>
-            <option value="PUBLISHED">Published</option>
-            <option value="DRAFT">Draft</option>
-          </select>
+            <SelectTrigger className="">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {items.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       {/* Table grid */}
-      <div className="rounded-2xl border border-border/80 overflow-hidden bg-card shadow-sm shadow-muted/5">
-        <table className="w-full text-sm border-collapse">
-          <thead className="border-b border-border bg-muted/30 font-semibold text-muted-foreground">
-            <tr>
-              <th className="px-6 py-4 text-left text-[10px] uppercase tracking-wider">
+      <div className="rounded-xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] ">
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="px-6 py-4 text-[10px] uppercase tracking-wider">
                 Title &amp; Slug
-              </th>
-              <th className="px-6 py-4 text-left text-[10px] uppercase tracking-wider w-32">
+              </TableHead>
+              <TableHead className="px-6 py-4 text-[10px] uppercase tracking-wider">
+                Category
+              </TableHead>
+              <TableHead className="px-6 py-4 text-[10px] uppercase tracking-wider w-32">
                 Status
-              </th>
-              <th className="px-6 py-4 text-left text-[10px] uppercase tracking-wider w-36">
+              </TableHead>
+              <TableHead className="px-6 py-4 text-[10px] uppercase tracking-wider w-36">
                 Author
-              </th>
-              <th className="px-6 py-4 text-left text-[10px] uppercase tracking-wider w-36">
+              </TableHead>
+              <TableHead className="px-6 py-4 text-[10px] uppercase tracking-wider w-36">
                 Created
-              </th>
-              <th className="px-6 py-4 text-right text-[10px] uppercase tracking-wider w-36">
+              </TableHead>
+              <TableHead className="px-6 py-4 text-right text-[10px] uppercase tracking-wider w-36">
                 Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/60">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {filteredPosts.length === 0 ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={5}
-                  className="px-6 py-16 text-center text-xs text-muted-foreground"
+                  className="px-6 py-16 text-center text-xs text-muted-foreground whitespace-normal"
                 >
                   {posts.length === 0 ? (
                     <div className="space-y-1">
@@ -154,15 +201,12 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                   ) : (
                     "No posts match the active filters."
                   )}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               filteredPosts.map((post) => (
-                <tr
-                  key={post.id}
-                  className="hover:bg-muted/15 transition-colors group"
-                >
-                  <td className="px-6 py-4">
+                <TableRow key={post.id} className="group">
+                  <TableCell className="px-6 py-4 whitespace-normal">
                     <div className="font-bold text-foreground text-[14px] leading-snug">
                       <Link
                         href={`/admin/posts/edit/${post.id}`}
@@ -174,41 +218,44 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                     <div className="font-mono text-[10px] text-muted-foreground/80 mt-1 select-all">
                       /posts/{post.slug}
                     </div>
+
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     {post.categories.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5">
                         {post.categories.map((c) => (
-                          <span
+                          <Badge
+                            variant={"outline"}
                             key={c.name}
-                            className="rounded bg-muted px-2 py-0.5 text-[9px] font-bold text-muted-foreground/90 uppercase tracking-wider"
+                            className="py-1"
                           >
                             {c.name}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                     )}
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                        post.status === "PUBLISHED"
-                          ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
-                          : "bg-muted text-muted-foreground/90"
-                      }`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
+                        ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                        : "bg-muted text-muted-foreground/90"
+                        }`}
                     >
                       {post.status === "PUBLISHED" ? "Published" : "Draft"}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-xs font-semibold text-foreground/80">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-xs font-semibold text-foreground/80">
                     {post.author.name ?? "—"}
-                  </td>
-                  <td className="px-6 py-4 text-xs text-muted-foreground/90 font-mono">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-xs text-muted-foreground/90 font-mono">
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
                     })}
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2.5">
                       <Link
                         href={`/posts/${post.slug}`}
@@ -216,14 +263,14 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                         className="p-2 text-muted-foreground/80 hover:text-foreground hover:bg-muted/70 rounded-lg transition-all"
                         title="View post on live site"
                       >
-                        <ExternalLink size={13} />
+                        <LinkIcon />
                       </Link>
                       <Link
                         href={`/admin/posts/edit/${post.id}`}
                         className="p-2 text-muted-foreground/80 hover:text-foreground hover:bg-muted/70 rounded-lg transition-all"
                         title="Edit post"
                       >
-                        <Edit2 size={13} />
+                        <EditPen />
                       </Link>
                       <button
                         type="button"
@@ -232,15 +279,15 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                         className="p-2 text-muted-foreground/80 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all disabled:opacity-50 cursor-pointer"
                         title="Delete post"
                       >
-                        <Trash2 size={13} />
+                        <TrashCan className="**:stroke-current shrink-0" />
                       </button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
           href="/admin/posts/new"
           className="rounded-lg bg-primary pl-4 pr-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px flex justify-center items-center gap-2"
         >
-          <AddSquare className="invert-100" />
+          <AddSquare className="**:stroke-current shrink-0 **:stroke-2" />
            New Post
         </Link>
         <Link
