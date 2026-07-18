@@ -1,7 +1,7 @@
-import { Clock, MessageSquare, PenTool, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { PublishedPost, Clock, Comment, Users, AddSquare } from "@/lib/icons";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -37,9 +37,9 @@ export default async function AdminDashboardPage() {
   });
 
   const stats = [
-    { label: "Published Posts", value: publishedCount, icon: PenTool },
+    { label: "Published Posts", value: publishedCount, icon: PublishedPost },
     { label: "Draft Posts", value: draftCount, icon: Clock },
-    { label: "Pending Comments", value: commentCount, icon: MessageSquare },
+    { label: "Pending Comments", value: commentCount, icon: Comment },
     { label: "Total Users", value: userCount, icon: Users },
   ];
 
@@ -62,18 +62,15 @@ export default async function AdminDashboardPage() {
           return (
             <div
               key={stat.label}
-              className="group rounded-2xl border border-border bg-card p-6 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-muted/50"
+              className="group rounded-2xl px-6 py-4 shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),inset_0_0_1px_1px_rgba(255,255,255,0.1)]"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   {stat.label}
                 </p>
-                <Icon
-                  size={15}
-                  className="text-muted-foreground/60 transition-colors group-hover:text-primary"
-                />
+                <Icon className="size-4 text-muted-foreground/60 transition-colors group-hover:text-primary" />
               </div>
-              <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-foreground">
+              <p className="mt-3 font-sans text-3xl font-bold tracking-tight text-foreground">
                 {stat.value}
               </p>
             </div>
@@ -85,13 +82,14 @@ export default async function AdminDashboardPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/admin/posts/new"
-          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px"
+          className="rounded-lg bg-primary pl-4 pr-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px flex justify-center items-center gap-2"
         >
-          + New Post
+          <AddSquare className="invert-100" />
+           New Post
         </Link>
         <Link
           href="/admin/comments"
-          className="rounded-xl border border-border bg-card px-5 py-2.5 text-xs font-bold text-foreground hover:bg-muted/70 transition-all duration-150 cursor-pointer active:translate-y-px"
+          className="rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),inset_0_0_1px_1px_rgba(255,255,255,0.1)] px-5 py-2.5 text-xs font-bold text-foreground "
         >
           Moderate Comments ({commentCount})
         </Link>
@@ -136,11 +134,10 @@ export default async function AdminDashboardPage() {
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                      post.status === "PUBLISHED"
+                    className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
                         ? "bg-green-500/10 text-green-700 dark:text-green-400"
                         : "bg-muted text-muted-foreground"
-                    }`}
+                      }`}
                   >
                     {post.status === "PUBLISHED" ? "Published" : "Draft"}
                   </span>
