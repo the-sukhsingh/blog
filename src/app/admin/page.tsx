@@ -62,7 +62,7 @@ export default async function AdminDashboardPage() {
           return (
             <div
               key={stat.label}
-              className="group rounded-2xl px-6 py-4 shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),inset_0_0_1px_1px_rgba(255,255,255,0.1)]"
+              className="group rounded-2xl px-6 py-4 shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)]"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
@@ -89,16 +89,16 @@ export default async function AdminDashboardPage() {
         </Link>
         <Link
           href="/admin/comments"
-          className="rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.1),inset_0_0_1px_1px_rgba(255,255,255,0.1)] px-5 py-2.5 text-xs font-bold text-foreground "
+          className="rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] px-5 py-2.5 text-xs font-bold text-foreground "
         >
           Moderate Comments ({commentCount})
         </Link>
       </div>
 
       {/* Recent Activity Section */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Recent Posts Panel */}
-        <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
+        <section className="rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_2px_rgba(255,255,255,0.05)] px-4 py-3 md:p-5 space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-border/50">
             <h2 className="text-sm font-bold text-foreground tracking-tight">
               Recent Posts
@@ -134,7 +134,7 @@ export default async function AdminDashboardPage() {
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
+                    className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
                         ? "bg-green-500/10 text-green-700 dark:text-green-400"
                         : "bg-muted text-muted-foreground"
                       }`}
@@ -148,7 +148,7 @@ export default async function AdminDashboardPage() {
         </section>
 
         {/* Pending Comments Panel */}
-        <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
+        <section className="rounded-2xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_2px_rgba(255,255,255,0.05)] px-4 py-3 md:p-5 space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-border/50">
             <h2 className="text-sm font-bold text-foreground tracking-tight">
               Pending Comments
