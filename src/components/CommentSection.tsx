@@ -90,7 +90,9 @@ export default function CommentSection({
       {/* Comment List */}
       {comments.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-10 px-6 text-center text-muted-foreground bg-muted/10">
-          <p className="text-sm font-semibold text-foreground/80">No comments yet.</p>
+          <p className="text-sm font-semibold text-foreground/80">
+            No comments yet.
+          </p>
           <p className="text-xs mt-1">Be the first to share your thoughts.</p>
         </div>
       ) : (
@@ -128,7 +130,8 @@ export default function CommentSection({
             Add your comment
           </h4>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Your email address will not be published. Required fields are marked *
+            Your email address will not be published. Required fields are marked
+            *
           </p>
         </div>
 

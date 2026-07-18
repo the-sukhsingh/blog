@@ -5,7 +5,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "The Journal — Editorial Studio",
-  description: "Thoughtful essays, reviews, and technical guides written by content editors and publishers.",
+  description:
+    "Thoughtful essays, reviews, and technical guides written by content editors and publishers.",
 };
 
 export default async function HomePage() {
@@ -32,8 +33,8 @@ export default async function HomePage() {
               The Journal
             </h1>
             <p className="mt-4 text-base text-muted-foreground max-w-xl leading-relaxed">
-              Thoughtful essays, reviews, and technical guides. Written by content
-              editors and publishers of The Editorial Studio.
+              Thoughtful essays, reviews, and technical guides. Written by
+              content editors and publishers of The Editorial Studio.
             </p>
           </div>
           <div className="hidden md:block text-right">
@@ -46,7 +47,9 @@ export default async function HomePage() {
 
       {posts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-24 text-center text-muted-foreground bg-muted/10 max-w-2xl mx-auto">
-          <p className="text-base font-semibold text-foreground">No articles published yet.</p>
+          <p className="text-base font-semibold text-foreground">
+            No articles published yet.
+          </p>
           <p className="mt-2 text-sm text-muted-foreground">
             Head over to the{" "}
             <Link

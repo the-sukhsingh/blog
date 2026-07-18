@@ -297,26 +297,35 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
         {/* Slide-over Publish Settings Sheet */}
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-          <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto p-6 space-y-6">
+          <SheetContent
+            side="right"
+            className="w-full sm:max-w-md overflow-y-auto p-6 space-y-6"
+          >
             <SheetHeader className="pb-4 border-b border-border/60">
               <SheetTitle className="text-base font-bold flex items-center gap-2">
                 Publish Settings
               </SheetTitle>
               <SheetDescription>
-                Configure taxonomies, cover photos, and details for this article.
+                Configure taxonomies, cover photos, and details for this
+                article.
               </SheetDescription>
             </SheetHeader>
 
             <div className="space-y-6 pt-2">
               {/* Status Option */}
               <div className="space-y-1.5">
-                <label htmlFor="post-status" className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+                <label
+                  htmlFor="post-status"
+                  className="text-xs font-bold text-foreground/80 uppercase tracking-wider"
+                >
                   Post Status
                 </label>
                 <select
                   id="post-status"
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as "DRAFT" | "PUBLISHED")}
+                  onChange={(e) =>
+                    setStatus(e.target.value as "DRAFT" | "PUBLISHED")
+                  }
                   className="h-10 w-full rounded-xl border border-border/85 bg-background px-3 text-xs font-semibold outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
                 >
                   <option value="DRAFT">Draft</option>
@@ -355,7 +364,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                     ) : (
                       <>
                         <ImageIcon size={18} className="opacity-75" />
-                        <span className="font-semibold">Click to upload image</span>
+                        <span className="font-semibold">
+                          Click to upload image
+                        </span>
                       </>
                     )}
                     <input
@@ -371,7 +382,10 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
               {/* Excerpt */}
               <div className="space-y-1.5">
-                <label htmlFor="post-excerpt" className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+                <label
+                  htmlFor="post-excerpt"
+                  className="text-xs font-bold text-foreground/80 uppercase tracking-wider"
+                >
                   Excerpt Summary
                 </label>
                 <textarea
@@ -386,7 +400,10 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
               {/* Slug */}
               <div className="space-y-1.5">
-                <label htmlFor="post-slug" className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+                <label
+                  htmlFor="post-slug"
+                  className="text-xs font-bold text-foreground/80 uppercase tracking-wider"
+                >
                   URL Slug path
                 </label>
                 <div className="flex items-center gap-2">
@@ -419,7 +436,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               {/* Categories */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
-                  <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider">Categories</span>
+                  <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+                    Categories
+                  </span>
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(true)}
@@ -429,7 +448,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                   </button>
                 </div>
                 {categories.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">No categories yet.</p>
+                  <p className="text-xs text-muted-foreground">
+                    No categories yet.
+                  </p>
                 ) : (
                   <div className="max-h-36 space-y-1 overflow-y-auto pr-1">
                     {categories.map((cat) => (
@@ -445,7 +466,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                           onChange={() => toggleCategory(cat.id)}
                           className="h-3.5 w-3.5 rounded border-border accent-primary"
                         />
-                        <span className="flex-1 truncate text-foreground/80">{cat.name}</span>
+                        <span className="flex-1 truncate text-foreground/80">
+                          {cat.name}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -455,7 +478,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               {/* Tags */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
-                  <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider">Tags</span>
+                  <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+                    Tags
+                  </span>
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(true)}

@@ -46,9 +46,7 @@ export default function PostCard({
 
         {/* Title */}
         <h2 className="text-xl md:text-2xl font-bold leading-tight tracking-tight text-foreground group-hover:text-primary transition-colors">
-          <Link href={`/posts/${slug}`}>
-            {title}
-          </Link>
+          <Link href={`/posts/${slug}`}>{title}</Link>
         </h2>
 
         {/* Excerpt */}

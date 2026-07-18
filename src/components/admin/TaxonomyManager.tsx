@@ -151,7 +151,9 @@ export default function TaxonomyManager({
         <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
           <div className="flex items-center gap-2.5 border-b border-border/40 pb-3">
             <FolderOpen size={16} className="text-muted-foreground/80" />
-            <h2 className="text-sm font-bold text-foreground tracking-tight">Categories</h2>
+            <h2 className="text-sm font-bold text-foreground tracking-tight">
+              Categories
+            </h2>
             <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground/95 ml-auto">
               {categories.length}
             </span>
@@ -268,7 +270,9 @@ export default function TaxonomyManager({
         <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
           <div className="flex items-center gap-2.5 border-b border-border/40 pb-3">
             <Tag size={16} className="text-muted-foreground/80" />
-            <h2 className="text-sm font-bold text-foreground tracking-tight">Tags</h2>
+            <h2 className="text-sm font-bold text-foreground tracking-tight">
+              Tags
+            </h2>
             <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground/95 ml-auto">
               {tags.length}
             </span>

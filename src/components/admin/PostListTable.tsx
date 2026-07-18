@@ -138,7 +138,9 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                 >
                   {posts.length === 0 ? (
                     <div className="space-y-1">
-                      <p className="font-semibold text-foreground/80 text-sm">No posts created yet.</p>
+                      <p className="font-semibold text-foreground/80 text-sm">
+                        No posts created yet.
+                      </p>
                       <p className="text-xs">
                         Get started by{" "}
                         <Link
@@ -162,7 +164,10 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                 >
                   <td className="px-6 py-4">
                     <div className="font-bold text-foreground text-[14px] leading-snug">
-                      <Link href={`/admin/posts/edit/${post.id}`} className="hover:text-primary transition-colors">
+                      <Link
+                        href={`/admin/posts/edit/${post.id}`}
+                        className="hover:text-primary transition-colors"
+                      >
                         {post.title}
                       </Link>
                     </div>

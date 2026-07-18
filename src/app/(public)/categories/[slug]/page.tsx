@@ -59,7 +59,9 @@ export default async function CategoryPage({ params }: Props) {
 
       {category.posts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-20 text-center text-muted-foreground bg-muted/10">
-          <p className="text-base font-semibold text-foreground/80">No posts in this category yet.</p>
+          <p className="text-base font-semibold text-foreground/80">
+            No posts in this category yet.
+          </p>
         </div>
       ) : (
         <div className="divide-y divide-border/10">

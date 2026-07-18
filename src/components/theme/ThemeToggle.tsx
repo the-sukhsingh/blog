@@ -1,11 +1,12 @@
 "use client";
 import { useTheme } from "next-themes";
-import type { SVGProps } from "react";
+import { type SVGProps, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export function ModeToggle({ className = "" }: { className?: string }) {
   const { theme, systemTheme, setTheme } = useTheme();
-  const toggleTheme = () => {
+
+  const toggleTheme = useCallback(() => {
     if (theme === "system") {
       if (systemTheme === "dark") {
         setTheme("light");
@@ -19,8 +20,9 @@ export function ModeToggle({ className = "" }: { className?: string }) {
         setTheme("dark");
       }
     }
-  };
-  const handleThemeToggle = () => {
+  }, [theme, systemTheme, setTheme]);
+
+  const handleThemeToggle = useCallback(() => {
     if (!document?.startViewTransition) {
       toggleTheme();
       return;
@@ -29,7 +31,32 @@ export function ModeToggle({ className = "" }: { className?: string }) {
     document.startViewTransition(() => {
       toggleTheme();
     });
-  };
+  }, [toggleTheme]);
+
+  useEffect(() => {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      // Check if input, textareas, or contenteditable editors are focused
+      if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target.isContentEditable ||
+        target.closest("[contenteditable='true']")
+      ) {
+        return;
+      }
+
+      if (e.key === "d") {
+        e.preventDefault();
+        console.log("toggling theme");
+        handleThemeToggle();
+      }
+    };
+    document.addEventListener("keydown", handleKeyboard);
+    return () => {
+      document.removeEventListener("keydown", handleKeyboard);
+    };
+  }, [handleThemeToggle]);
 
   return (
     <button

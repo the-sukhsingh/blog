@@ -136,7 +136,9 @@ export default function CommentList({ initialComments }: CommentListProps) {
         {displayedComments.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border py-20 text-center text-muted-foreground bg-muted/10">
             <MessageSquare className="mx-auto size-9 mb-3 opacity-30 text-muted-foreground" />
-            <p className="text-sm font-semibold text-foreground/80">No comments found.</p>
+            <p className="text-sm font-semibold text-foreground/80">
+              No comments found.
+            </p>
             <p className="text-xs mt-1">
               There are no comments matching this category.
             </p>

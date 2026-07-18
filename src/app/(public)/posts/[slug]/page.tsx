@@ -63,7 +63,10 @@ export default async function PostDetailPage({ params }: Props) {
         href="/"
         className="group mb-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 hover:text-foreground transition-colors"
       >
-        <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-0.5" />
+        <ArrowLeft
+          size={13}
+          className="transition-transform group-hover:-translate-x-0.5"
+        />
         Back to articles
       </Link>
 

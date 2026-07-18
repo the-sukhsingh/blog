@@ -38,7 +38,6 @@ export function generateHtmlFromJSON(json: any) {
   }
 }
 
-
 export function getPlainTextFromJSON(json: any): string {
   if (!json) return "";
 

@@ -68,7 +68,10 @@ export default async function AdminDashboardPage() {
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                   {stat.label}
                 </p>
-                <Icon size={15} className="text-muted-foreground/60 transition-colors group-hover:text-primary" />
+                <Icon
+                  size={15}
+                  className="text-muted-foreground/60 transition-colors group-hover:text-primary"
+                />
               </div>
               <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-foreground">
                 {stat.value}
@@ -99,7 +102,9 @@ export default async function AdminDashboardPage() {
         {/* Recent Posts Panel */}
         <section className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6 shadow-sm shadow-muted/5">
           <div className="flex items-center justify-between pb-3 border-b border-border/50">
-            <h2 className="text-sm font-bold text-foreground tracking-tight">Recent Posts</h2>
+            <h2 className="text-sm font-bold text-foreground tracking-tight">
+              Recent Posts
+            </h2>
             <Link
               href="/admin/posts"
               className="text-xs text-muted-foreground hover:text-foreground font-semibold underline underline-offset-2"
@@ -166,7 +171,10 @@ export default async function AdminDashboardPage() {
           ) : (
             <div className="space-y-4">
               {pendingComments.map((comment) => (
-                <div key={comment.id} className="text-sm space-y-2 pb-4 border-b border-border/30 last:border-0 last:pb-0">
+                <div
+                  key={comment.id}
+                  className="text-sm space-y-2 pb-4 border-b border-border/30 last:border-0 last:pb-0"
+                >
                   <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                     <span className="font-bold text-foreground">
                       {comment.name}
