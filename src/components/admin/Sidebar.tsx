@@ -83,7 +83,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
   }, []);
 
   return (
-    <div>
+    <div className="sticky h-dvh left-0 top-0 z-100">
       {/* Sidebar Container */}
       <motion.aside
         initial={{ width: 256 }}

@@ -1,7 +1,7 @@
-import { Search } from "lucide-react";
 import type { Metadata } from "next";
 import PostCard from "@/components/PostCard";
 import { prisma } from "@/lib/prisma";
+import { Search} from "@/lib/icons"
 
 export const metadata: Metadata = {
   title: "Search",
@@ -61,7 +61,6 @@ export default async function SearchPage({ searchParams }: Props) {
           <div className="flex items-center gap-3">
             <div className="relative flex-1">
               <Search
-                size={16}
                 className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/80"
               />
               <input

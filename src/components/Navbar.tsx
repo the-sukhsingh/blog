@@ -1,15 +1,14 @@
 "use client";
 
-import { Search, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/theme/ThemeToggle";
+import { Search} from "@/lib/icons";
 
 const links = [
   { name: "Home", href: "/" },
-  { name: "Search", href: "/search", icon: Search },
-  { name: "Admin", href: "/admin", icon: Settings },
+  { name: "Search", href: "/search", icon: Search  }
 ];
 
 export default function Navbar() {
@@ -47,7 +46,7 @@ export default function Navbar() {
                       : "text-muted-foreground",
                   )}
                 >
-                  {Icon && <Icon size={13} className="opacity-70" />}
+                  {Icon && <Icon className="size-3 opacity-70" />}
                   {link.name}
                 </Link>
               );

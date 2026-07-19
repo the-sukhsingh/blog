@@ -82,14 +82,14 @@ export default async function AdminDashboardPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/admin/posts/new"
-          className="rounded-lg bg-primary pl-4 pr-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px flex justify-center items-center gap-2"
+          className="rounded-xl bg-primary pl-4 pr-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px flex justify-center items-center gap-2"
         >
           <AddSquare className="**:stroke-current shrink-0 **:stroke-2" />
            New Post
         </Link>
         <Link
           href="/admin/comments"
-          className="rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] px-5 py-2.5 text-xs font-bold text-foreground "
+          className="rounded-xl shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] px-5 py-2.5 text-xs font-bold text-foreground "
         >
           Moderate Comments ({commentCount})
         </Link>

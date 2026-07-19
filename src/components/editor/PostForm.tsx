@@ -1,5 +1,11 @@
 "use client";
 
+/* Hallmark · component: post-editor-header · genre: editorial · theme: editorial-studio
+ * states: default · hover · focus · active · disabled · loading · error · success
+ * contrast: pass (46–50)
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ */
+
 import { ImageIcon, Loader2, Settings2, Undo2, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -12,6 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { ArrowLeft, Setting } from "@/lib/icons";
 
 const TipTapEditor = dynamic(() => import("./TipTapEditor"), { ssr: false });
 
@@ -233,37 +240,55 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
       />
       <form onSubmit={handleSubmit}>
         {/* Floating Write Header */}
-
-        <div className="sticky top-0 inset-x-0 w-full z-50 flex items-center justify-between backdrop-blur-md py-4 px-8">
+        <div className="sticky top-0 z-40 -mt-6 -mx-6 mb-6 px-6 border-b border-border/80 bg-background/85 backdrop-blur-md h-14 flex items-center justify-between transition-all">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => router.push("/admin/posts")}
-              className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer select-none"
+              className="group text-xs font-semibold text-muted-foreground hover:text-foreground transition-all duration-150 cursor-pointer select-none flex justify-center items-center gap-1.5 h-8 px-2 rounded-md hover:bg-muted/50 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
-              <Undo2 /> Back to posts
+              <ArrowLeft className="transition-transform duration-150 group-hover:-translate-x-0.5" />
+              <span>Back to posts</span>
             </button>
             <span className="h-4 w-px bg-border/80" />
-            <span className="rounded-full bg-muted px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/95 select-none">
+            <span className="text-xs font-semibold text-muted-foreground select-none">
+              {isEditing ? "Edit Post" : "New Post"}
+            </span>
+            {title.trim() && (
+              <>
+                <span className="h-3 w-px bg-border/40 hidden md:inline" />
+                <span className="text-xs text-muted-foreground max-w-[180px] lg:max-w-[280px] truncate font-medium hidden md:inline">
+                  {title}
+                </span>
+              </>
+            )}
+            <span className="h-4 w-px bg-border/80" />
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${status === "PUBLISHED"
+                ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                : "bg-muted text-muted-foreground/90"
+                }`}
+            >
               {status === "PUBLISHED" ? "Published" : "Draft"}
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
-              className="rounded-xl border border-border/85 bg-card px-4 py-2 text-xs font-bold text-foreground hover:bg-muted/70 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-card hover:bg-muted/60 h-8 px-3 text-xs font-semibold text-foreground transition-all duration-150 cursor-pointer select-none active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
-              Publish Settings
+              <Setting />
+              <span>Settings</span>
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 disabled:opacity-60 transition-all duration-150 cursor-pointer active:translate-y-px"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary hover:bg-primary/95 disabled:opacity-50 h-8 px-3.5 text-xs font-bold text-primary-foreground transition-all duration-150 cursor-pointer select-none active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
-              {saving && <Loader2 size={13} className="animate-spin" />}
-              {saving ? "Saving…" : isEditing ? "Save Changes" : "Publish Post"}
+              {saving && <Loader2 size={12} className="animate-spin" />}
+              <span>{saving ? "Saving…" : isEditing ? "Save Changes" : "Publish"}</span>
             </button>
           </div>
         </div>
@@ -299,13 +324,13 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetContent
             side="right"
-            className="w-full sm:max-w-md overflow-y-auto p-6 space-y-6"
+            className="w-full sm:max-w-md overflow-y-auto p-6 space-y-6 border-l border-border/80 bg-background"
           >
-            <SheetHeader className="pb-4 border-b border-border/60">
-              <SheetTitle className="text-base font-bold flex items-center gap-2">
+            <SheetHeader className="pb-4 border-b border-border/80">
+              <SheetTitle className="text-lg font-bold text-foreground tracking-tight flex items-center gap-2">
                 Publish Settings
               </SheetTitle>
-              <SheetDescription>
+              <SheetDescription className="text-xs text-muted-foreground/90 mt-1 leading-normal">
                 Configure taxonomies, cover photos, and details for this
                 article.
               </SheetDescription>
@@ -313,43 +338,53 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
             <div className="space-y-6 pt-2">
               {/* Status Option */}
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="post-status"
-                  className="text-xs font-bold text-foreground/80 uppercase tracking-wider"
-                >
-                  Post Status
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground select-none">
+                  Post status
                 </label>
-                <select
-                  id="post-status"
-                  value={status}
-                  onChange={(e) =>
-                    setStatus(e.target.value as "DRAFT" | "PUBLISHED")
-                  }
-                  className="h-10 w-full rounded-xl border border-border/85 bg-background px-3 text-xs font-semibold outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
-                >
-                  <option value="DRAFT">Draft</option>
-                  <option value="PUBLISHED">Published</option>
-                </select>
+                <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1 border border-border/60">
+                  <button
+                    type="button"
+                    onClick={() => setStatus("DRAFT")}
+                    className={`rounded-md py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer ${
+                      status === "DRAFT"
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("PUBLISHED")}
+                    className={`rounded-md py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer ${
+                      status === "PUBLISHED"
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Published
+                  </button>
+                </div>
               </div>
 
               {/* Cover Image */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
-                  Cover Image
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground select-none">
+                  Cover image
                 </label>
                 {coverImage ? (
-                  <div className="relative rounded-xl overflow-hidden border border-border bg-muted/20">
+                  <div className="relative rounded-lg overflow-hidden border border-border bg-muted/20 group">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={coverImage}
                       alt="Cover Preview"
-                      className="w-full object-cover max-h-[160px]"
+                      className="w-full object-cover max-h-[160px] transition-transform duration-300 group-hover:scale-[1.02]"
                     />
                     <button
                       type="button"
                       onClick={() => setCoverImage(null)}
-                      className="absolute right-2 top-2 rounded-lg bg-background/90 p-1.5 text-muted-foreground hover:text-destructive hover:bg-background border border-border shadow-sm transition-all"
+                      className="absolute right-2 top-2 rounded-lg bg-background/90 p-1.5 text-muted-foreground hover:text-destructive hover:bg-background border border-border shadow-sm transition-all active:scale-95"
                     >
                       <X size={13} />
                     </button>
@@ -357,13 +392,13 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                 ) : (
                   <label
                     htmlFor="cover-upload"
-                    className="flex h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/85 bg-muted/10 text-xs text-muted-foreground transition-all hover:border-primary hover:text-primary hover:bg-muted/20"
+                    className="flex h-24 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border/80 bg-muted/10 text-xs text-muted-foreground transition-all hover:border-foreground/30 hover:bg-muted/20 active:scale-[0.98] select-none"
                   >
                     {uploadingCover ? (
-                      <Loader2 size={18} className="animate-spin" />
+                      <Loader2 size={18} className="animate-spin text-muted-foreground" />
                     ) : (
                       <>
-                        <ImageIcon size={18} className="opacity-75" />
+                        <ImageIcon size={16} className="opacity-70 text-foreground/80" />
                         <span className="font-semibold">
                           Click to upload image
                         </span>
@@ -381,12 +416,12 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Excerpt */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <label
                   htmlFor="post-excerpt"
-                  className="text-xs font-bold text-foreground/80 uppercase tracking-wider"
+                  className="text-xs font-semibold text-foreground select-none"
                 >
-                  Excerpt Summary
+                  Excerpt summary
                 </label>
                 <textarea
                   id="post-excerpt"
@@ -394,19 +429,19 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                   value={excerpt}
                   onChange={(e) => setExcerpt(e.target.value)}
                   placeholder="A short summary for search engines…"
-                  className="w-full rounded-xl border border-border/85 bg-background px-3 py-2 text-xs outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5 resize-none min-h-[70px]"
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-all focus:border-foreground focus:ring-1 focus:ring-foreground/20 resize-none min-h-[70px]"
                 />
               </div>
 
               {/* Slug */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <label
                   htmlFor="post-slug"
-                  className="text-xs font-bold text-foreground/80 uppercase tracking-wider"
+                  className="text-xs font-semibold text-foreground select-none"
                 >
                   URL Slug path
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="relative flex items-center">
                   <input
                     id="post-slug"
                     type="text"
@@ -416,7 +451,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                       setSlug(e.target.value);
                     }}
                     placeholder="post-slug"
-                    className="h-10 flex-1 rounded-xl border border-border/85 bg-background px-3 font-mono text-xs outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/5"
+                    className="h-9 w-full rounded-lg border border-border bg-background pl-3 pr-14 font-mono text-xs text-foreground outline-none transition-all focus:border-foreground focus:ring-1 focus:ring-foreground/20"
                   />
                   {slugManuallyEdited && (
                     <button
@@ -425,7 +460,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                         setSlugManuallyEdited(false);
                         setSlug(slugify(title));
                       }}
-                      className="text-[10px] font-bold text-muted-foreground hover:text-foreground underline"
+                      className="absolute right-2.5 text-[10px] font-bold text-muted-foreground hover:text-foreground underline select-none cursor-pointer active:scale-95"
                     >
                       Reset
                     </button>
@@ -434,15 +469,15 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Categories */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
-                  <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between pb-1 border-b border-border/40">
+                  <span className="text-xs font-semibold text-foreground">
                     Categories
                   </span>
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(true)}
-                    className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+                    className="text-[10px] font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors cursor-pointer"
                   >
                     Manage
                   </button>
@@ -452,21 +487,21 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                     No categories yet.
                   </p>
                 ) : (
-                  <div className="max-h-36 space-y-1 overflow-y-auto pr-1">
+                  <div className="max-h-36 space-y-0.5 overflow-y-auto pr-1">
                     {categories.map((cat) => (
                       <label
                         key={cat.id}
                         htmlFor={`cat-${cat.id}`}
-                        className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 text-xs font-semibold hover:bg-muted/65"
+                        className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-colors"
                       >
                         <input
                           id={`cat-${cat.id}`}
                           type="checkbox"
                           checked={selectedCategories.includes(cat.id)}
                           onChange={() => toggleCategory(cat.id)}
-                          className="h-3.5 w-3.5 rounded border-border accent-primary"
+                          className="size-3.5 rounded border-border accent-primary cursor-pointer focus:ring-0 focus:ring-offset-0"
                         />
-                        <span className="flex-1 truncate text-foreground/80">
+                        <span className="flex-1 truncate font-medium">
                           {cat.name}
                         </span>
                       </label>
@@ -476,15 +511,15 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Tags */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-border/40 pb-1.5">
-                  <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between pb-1 border-b border-border/40">
+                  <span className="text-xs font-semibold text-foreground">
                     Tags
                   </span>
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(true)}
-                    className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+                    className="text-[10px] font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors cursor-pointer"
                   >
                     Manage
                   </button>
@@ -493,33 +528,36 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                   <p className="text-xs text-muted-foreground">No tags yet.</p>
                 ) : (
                   <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
-                    {tags.map((tag) => (
-                      <button
-                        key={tag.id}
-                        type="button"
-                        onClick={() => toggleTag(tag.id)}
-                        className={`rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition-all cursor-pointer ${
-                          selectedTags.includes(tag.id)
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border/85 bg-background text-muted-foreground hover:border-primary hover:text-primary"
-                        }`}
-                      >
-                        {tag.name}
-                      </button>
-                    ))}
+                    {tags.map((tag) => {
+                      const isSelected = selectedTags.includes(tag.id);
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          onClick={() => toggleTag(tag.id)}
+                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${
+                            isSelected
+                              ? "border-primary bg-primary text-primary-foreground font-semibold"
+                              : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                          }`}
+                        >
+                          #{tag.name}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
             </div>
 
             {/* Confirmation CTA inside the sheet */}
-            <div className="pt-4 border-t border-border/60">
+            <div className="pt-4 border-t border-border/80">
               <button
                 type="button"
                 onClick={() => setSheetOpen(false)}
-                className="w-full rounded-xl bg-primary py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all cursor-pointer text-center"
+                className="w-full rounded-lg bg-primary hover:bg-primary/95 text-primary-foreground h-9 text-xs font-bold transition-all cursor-pointer select-none active:scale-[0.98]"
               >
-                Close Settings
+                Done
               </button>
             </div>
           </SheetContent>
