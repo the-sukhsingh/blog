@@ -19,6 +19,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ArrowLeft, Setting } from "@/lib/icons";
+import { motion } from "motion/react";
+import { Checkbox } from "@/components/ui/checkbox"
 
 const TipTapEditor = dynamic(() => import("./TipTapEditor"), { ssr: false });
 
@@ -324,9 +326,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetContent
             side="right"
-            className="w-full sm:max-w-md overflow-y-auto p-6 space-y-6 border-l border-border/80 bg-background"
+            className="w-full sm:max-w-md overflow-y-auto p-4 border-l border-border/80 bg-background scrollbar-none "
           >
-            <SheetHeader className="pb-4 border-b border-border/80">
+            <SheetHeader className="p-2">
               <SheetTitle className="text-lg font-bold text-foreground tracking-tight flex items-center gap-2">
                 Publish Settings
               </SheetTitle>
@@ -336,45 +338,55 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </SheetDescription>
             </SheetHeader>
 
-            <div className="space-y-6 pt-2">
+            <div className="space-y-4">
               {/* Status Option */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground select-none">
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-foreground select-none">
                   Post status
                 </label>
-                <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1 border border-border/60">
+                <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1 border border-border/60">
                   <button
                     type="button"
                     onClick={() => setStatus("DRAFT")}
-                    className={`rounded-md py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer ${
-                      status === "DRAFT"
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className="rounded-lg py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer relative flex items-center justify-center"
                   >
-                    Draft
+                    {status === "DRAFT" && (
+                      <motion.span
+                        layoutId="active-status-bg"
+                        className="absolute inset-0 bg-background rounded-lg shadow-sm z-0"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                    <span className={`relative z-10 transition-colors duration-150 ${status === "DRAFT" ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
+                      Draft
+                    </span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setStatus("PUBLISHED")}
-                    className={`rounded-md py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer ${
-                      status === "PUBLISHED"
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className="rounded-lg py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer relative flex items-center justify-center"
                   >
-                    Published
+                    {status === "PUBLISHED" && (
+                      <motion.span
+                        layoutId="active-status-bg"
+                        className="absolute inset-0 bg-background rounded-lg shadow-sm z-0"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                    <span className={`relative z-10 transition-colors duration-150 ${status === "PUBLISHED" ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
+                      Published
+                    </span>
                   </button>
                 </div>
               </div>
 
               {/* Cover Image */}
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-foreground select-none">
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-foreground select-none">
                   Cover image
                 </label>
                 {coverImage ? (
-                  <div className="relative rounded-lg overflow-hidden border border-border bg-muted/20 group">
+                  <div className="relative rounded-xl overflow-hidden border border-border bg-muted/20 group">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={coverImage}
@@ -384,7 +396,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                     <button
                       type="button"
                       onClick={() => setCoverImage(null)}
-                      className="absolute right-2 top-2 rounded-lg bg-background/90 p-1.5 text-muted-foreground hover:text-destructive hover:bg-background border border-border shadow-sm transition-all active:scale-95"
+                      className="absolute right-2 top-2 rounded-lg bg-background/90 p-1.5 text-muted-foreground hover:text-destructive hover:bg-background border border-border shadow-sm transition-all active:scale-95 aspect-square"
                     >
                       <X size={13} />
                     </button>
@@ -416,10 +428,10 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Excerpt */}
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <label
                   htmlFor="post-excerpt"
-                  className="text-xs font-semibold text-foreground select-none"
+                  className="block text-xs font-semibold text-foreground select-none"
                 >
                   Excerpt summary
                 </label>
@@ -434,10 +446,10 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Slug */}
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <label
                   htmlFor="post-slug"
-                  className="text-xs font-semibold text-foreground select-none"
+                  className="block text-xs font-semibold text-foreground select-none"
                 >
                   URL Slug path
                 </label>
@@ -469,7 +481,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Categories */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between pb-1 border-b border-border/40">
                   <span className="text-xs font-semibold text-foreground">
                     Categories
@@ -487,19 +499,18 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                     No categories yet.
                   </p>
                 ) : (
-                  <div className="max-h-36 space-y-0.5 overflow-y-auto pr-1">
+                  <div className="max-h-36 space-y-0.5 overflow-y-auto scrollbar-none">
                     {categories.map((cat) => (
                       <label
                         key={cat.id}
                         htmlFor={`cat-${cat.id}`}
                         className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-colors"
                       >
-                        <input
+                        <Checkbox
                           id={`cat-${cat.id}`}
-                          type="checkbox"
                           checked={selectedCategories.includes(cat.id)}
-                          onChange={() => toggleCategory(cat.id)}
-                          className="size-3.5 rounded border-border accent-primary cursor-pointer focus:ring-0 focus:ring-offset-0"
+                          onCheckedChange={() => toggleCategory(cat.id)}
+                          className="size-3.5 p-1.5 cursor-pointer focus:ring-0 focus:ring-offset-0"
                         />
                         <span className="flex-1 truncate font-medium">
                           {cat.name}
@@ -511,7 +522,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               </div>
 
               {/* Tags */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between pb-1 border-b border-border/40">
                   <span className="text-xs font-semibold text-foreground">
                     Tags
@@ -535,13 +546,12 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                           key={tag.id}
                           type="button"
                           onClick={() => toggleTag(tag.id)}
-                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${
-                            isSelected
-                              ? "border-primary bg-primary text-primary-foreground font-semibold"
-                              : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
-                          }`}
+                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${isSelected
+                            ? "border-primary bg-primary text-primary-foreground font-semibold"
+                            : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                            }`}
                         >
-                          #{tag.name}
+                          # {tag.name}
                         </button>
                       );
                     })}
