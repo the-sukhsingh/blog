@@ -57,11 +57,10 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
     }
   }, [pathname]);
 
-  //   Detect keyboard shortcuts
+  // Detect keyboard shortcuts (Ctrl+B) to toggle sidebar
   React.useEffect(() => {
     const handleKeyboard = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      // Check if input, textareas, or contenteditable editors are focused
       if (
         target instanceof HTMLInputElement ||
         target instanceof HTMLTextAreaElement ||
@@ -89,62 +88,60 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
         initial={{ width: 256 }}
         animate={{ width: isCollapsed ? 64 : 256 }}
         transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
-        className="shrink-0 border-r border-border/80 bg-sidebar/80 backdrop-blur-sm"
+        className="shrink-0 border-r border-border bg-background"
       >
         <div className="sticky top-0 flex h-screen flex-col px-4 py-6">
           {/* Brand & Toggle Header */}
           <div
             className={cn(
-              "mb-6 flex items-center gap-2 px-1 h-8",
+              "mb-8 flex items-center h-8 px-1",
               isCollapsed ? "justify-center" : "justify-between",
             )}
           >
-            <AnimatePresence mode="popLayout" initial={false}>
-              {!isCollapsed && (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="font-semibold tracking-tight select-none whitespace-nowrap text-foreground text-sm"
-                >
-                  Admin
-                </motion.span>
-              )}
-            </AnimatePresence>
-
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="relative active:scale-95 transition-transform shrink-0"
-              disabled={state === "disabled"}
-              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              <AnimatePresence mode="wait" initial={false}>
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                disabled={state === "disabled"}
+                className="group flex size-7 items-center justify-center rounded-lg border border-border bg-card text-foreground font-mono text-xs font-bold shadow-none select-none shrink-0 cursor-pointer active:scale-95 hover:border-foreground/30 transition-[border-color,transform] duration-100"
+                aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
                 {isCollapsed ? (
-                  <motion.div
-                    key="collapsed"
-                    initial={{ opacity: 0, scale: 0.8, rotate: -45 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, rotate: 45 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
-                  >
-                    <SidebarRight />
-                  </motion.div>
+                  <>
+                    <span className="group-hover:hidden">E</span>
+                    <SidebarRight className="hidden group-hover:block size-3.5" />
+                  </>
                 ) : (
-                  <motion.div
-                    key="expanded"
-                    initial={{ opacity: 0, scale: 0.8, rotate: 45 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, scale: 0.8, rotate: -45 }}
+                  "E"
+                )}
+              </button>
+              <AnimatePresence mode="popLayout" initial={false}>
+                {!isCollapsed && (
+                  <motion.span
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -8 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
+                    className="font-mono text-xs font-bold tracking-[0.2em] text-foreground uppercase whitespace-nowrap"
                   >
-                    <SidebarLeft />
-                  </motion.div>
+                    Studio
+                  </motion.span>
                 )}
               </AnimatePresence>
-            </Button>
+            </div>
+
+            {!isCollapsed && (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                className="relative active:scale-95 transition-transform duration-100 ease-out shrink-0 text-muted-foreground hover:text-foreground"
+                disabled={state === "disabled"}
+                aria-label="Collapse sidebar"
+              >
+                <SidebarLeft />
+              </Button>
+            )}
           </div>
 
           {/* Navigation Links */}
@@ -170,17 +167,19 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
                   href={link.href}
                   onClick={() => setOptimisticActiveHref(link.href)}
                   className={cn(
-                    "relative flex items-center gap-3 rounded-lg p-2 text-xs transition-all duration-200 outline-none select-none",
+                    "relative flex items-center gap-3 rounded-lg p-2 text-[13px] tracking-tight font-medium transition-[color,background-color,transform] duration-150 ease-out outline-none select-none hover:translate-x-0.5 active:scale-[0.98]",
                     isActive
                       ? "text-foreground font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                    isItemHovered && "bg-muted/80 text-foreground",
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
+                    isItemHovered && "bg-secondary/60 text-foreground",
                     isItemFocused &&
-                      "ring-2 ring-ring/50 border-input bg-muted",
-                    isItemActive && "scale-[0.98] bg-muted/90 text-foreground",
+                      "ring-2 ring-ring/50 border-input bg-secondary",
+                    isItemActive &&
+                      "scale-[0.97] bg-secondary/80 text-foreground",
                     state === "disabled" &&
                       "opacity-50 pointer-events-none cursor-not-allowed",
-                    isCollapsed && "justify-center",
+                    isCollapsed &&
+                      "justify-center hover:translate-x-0 active:scale-95",
                   )}
                   tabIndex={state === "disabled" ? -1 : 0}
                 >
@@ -188,7 +187,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
                   {isActive && !isItemHovered && !isItemFocused && (
                     <motion.div
                       layoutId="sidebar-active-pill"
-                      className="absolute inset-0 bg-muted rounded-lg -z-10"
+                      className="absolute inset-0 bg-secondary rounded-lg border border-border/40 -z-10"
                       transition={{
                         type: "spring",
                         stiffness: 380,
@@ -199,7 +198,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
 
                   <Icon
                     className={cn(
-                      "size-4 shrink-0 transition-transform duration-200",
+                      "size-4 shrink-0 transition-transform duration-150 ease-out",
                       isItemActive && "scale-95",
                     )}
                   />
@@ -207,9 +206,9 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
                   <AnimatePresence mode="popLayout" initial={false}>
                     {!isCollapsed && (
                       <motion.span
-                        initial={{ opacity: 0, x: -10 }}
+                        initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
+                        exit={{ opacity: 0, x: -8 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
                         className="whitespace-nowrap overflow-hidden text-xs flex-1 text-left"
                       >
@@ -230,7 +229,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
           {state === "error" && (
             <div
               className={cn(
-                "mb-4 px-2.5 py-2 rounded-lg border border-destructive/20 bg-destructive/10 text-destructive text-[10px] flex items-center gap-2 transition-all duration-200",
+                "mb-4 px-2.5 py-2 rounded-lg border border-destructive/20 bg-destructive/10 text-destructive text-[10px] flex items-center gap-2 transition-[color,background-color] duration-150",
                 isCollapsed ? "justify-center" : "",
               )}
             >
@@ -246,7 +245,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
           {state === "success" && (
             <div
               className={cn(
-                "mb-4 px-2.5 py-2 rounded-lg border border-border bg-muted text-foreground text-[10px] flex items-center gap-2 transition-all duration-200",
+                "mb-4 px-2.5 py-2 rounded-lg border border-border bg-muted text-foreground text-[10px] flex items-center gap-2 transition-[color,background-color] duration-150",
                 isCollapsed ? "justify-center" : "",
               )}
             >
@@ -269,7 +268,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
             <a
               href="/api/auth/signout"
               className={cn(
-                "flex items-center gap-3 rounded-lg px-2 py-2 text-xs font-semibold text-muted-foreground transition-all duration-150 hover:bg-destructive/10 hover:text-destructive active:scale-[0.98] outline-none select-none focus-visible:ring-2 focus-visible:ring-destructive/30",
+                "flex items-center gap-3 rounded-lg px-2 py-2 text-xs font-semibold text-muted-foreground transition-[color,background-color,transform] duration-150 hover:bg-destructive/10 hover:text-destructive active:scale-[0.98] outline-none select-none focus-visible:ring-2 focus-visible:ring-destructive/30",
                 isCollapsed && "justify-center flex-initial py-2.5",
                 state === "disabled" &&
                   "opacity-50 pointer-events-none cursor-not-allowed",

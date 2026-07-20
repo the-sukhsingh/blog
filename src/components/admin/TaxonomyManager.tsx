@@ -368,7 +368,7 @@ export default function TaxonomyManager({
                     onClick={() => void handleDelete("tag", tag.id, tag.name)}
                     className="p-1.5 text-muted-foreground/80 hover:text-destructive rounded-lg hover:bg-destructive/10 transition-all cursor-pointer opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                   >
-                    <Trash2 size={13} />
+                    <TrashCan className="**:stroke-current" />
                   </button>
                 </div>
               ))

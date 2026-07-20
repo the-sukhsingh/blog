@@ -1,6 +1,5 @@
 "use client";
 
-import { Edit2, ExternalLink, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { noti } from "noti-toast";
 import { useState } from "react";
@@ -20,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { EditPen, LinkIcon, TrashCan } from "@/lib/icons";
+import { EditPen, LinkIcon, TrashCan, Search } from "@/lib/icons";
 import { Badge } from "../ui/badge";
 
 interface Post {
@@ -108,7 +107,6 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
           <Search
-            size={14}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/80"
           />
           <input
@@ -151,7 +149,7 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
       </div>
 
       {/* Table grid */}
-      <div className="rounded-xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] ">
+      <div className="rounded-2xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] ">
 
         <Table>
           <TableHeader>

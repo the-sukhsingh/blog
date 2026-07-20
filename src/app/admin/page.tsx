@@ -44,7 +44,7 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-5">
       <div>
         <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground">
           Dashboard
@@ -85,7 +85,7 @@ export default async function AdminDashboardPage() {
           className="rounded-xl bg-primary pl-4 pr-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/95 transition-all duration-150 cursor-pointer active:translate-y-px flex justify-center items-center gap-2"
         >
           <AddSquare className="**:stroke-current shrink-0 **:stroke-2" />
-           New Post
+          New Post
         </Link>
         <Link
           href="/admin/comments"
@@ -135,8 +135,8 @@ export default async function AdminDashboardPage() {
                   </div>
                   <span
                     className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
-                        ? "bg-green-500/10 text-green-700 dark:text-green-400"
-                        : "bg-muted text-muted-foreground"
+                      ? "bg-green-500/10 text-green-700 dark:text-green-400"
+                      : "bg-muted text-muted-foreground"
                       }`}
                   >
                     {post.status === "PUBLISHED" ? "Published" : "Draft"}
