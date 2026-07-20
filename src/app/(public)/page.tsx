@@ -104,7 +104,6 @@ export default async function HomePage() {
                   <h2 className="text-3xl font-extrabold tracking-tight text-foreground leading-tight sm:text-4xl hover:opacity-90 transition-opacity">
                     <Link
                       href={`/posts/${featuredPost.slug}`}
-                      className="hover:underline decoration-border/80 underline-offset-4 decoration-1"
                     >
                       {featuredPost.title}
                     </Link>

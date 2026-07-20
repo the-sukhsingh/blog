@@ -753,7 +753,7 @@ export const ArrowLeft = ({
   );
 };
 
-export const FolderOpenForCategories = ({
+export const FolderOpen = ({
   className,
   ...props
 }: SVGProps<SVGSVGElement> & {
