@@ -30,7 +30,8 @@ interface Post {
   createdAt: string | Date;
   publishedAt: string | Date | null;
   author: { name: string | null };
-  categories: { name: string }[];
+  category?: { name: string } | null;
+  categories?: { name: string }[];
   tags: { name: string }[];
 }
 
@@ -215,18 +216,18 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                     </div>
                   </TableCell>
                   <TableCell className="px-6 py-4">
-                    {post.categories.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {post.categories.map((c) => (
-                          <Badge
-                            variant={"outline"}
-                            key={c.name}
-                            className="py-1"
-                          >
-                            {c.name}
-                          </Badge>
-                        ))}
-                      </div>
+                    {post.category ? (
+                      <Badge variant={"outline"} className="py-1">
+                        {post.category.name}
+                      </Badge>
+                    ) : post.categories && post.categories.length > 0 ? (
+                      <Badge variant={"outline"} className="py-1">
+                        {post.categories[0].name}
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/60">
+                        —
+                      </span>
                     )}
                   </TableCell>
                   <TableCell className="px-6 py-4">

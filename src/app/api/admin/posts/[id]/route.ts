@@ -17,7 +17,15 @@ export async function GET(_request: NextRequest, { params }: Params) {
   const post = await prisma.post.findUnique({
     where: { id },
     include: {
-      categories: { select: { id: true, name: true, slug: true } },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          bgColorLight: true,
+          bgColorDark: true,
+        },
+      },
       tags: { select: { id: true, name: true, slug: true } },
       author: { select: { id: true, name: true } },
     },
@@ -51,21 +59,34 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       }),
       ...(body.excerpt !== undefined && { excerpt: body.excerpt }),
       ...(body.coverImage !== undefined && { coverImage: body.coverImage }),
+      ...(body.bgColorLight !== undefined && {
+        bgColorLight: body.bgColorLight,
+      }),
+      ...(body.bgColorDark !== undefined && { bgColorDark: body.bgColorDark }),
       ...(body.status !== undefined && {
         status: body.status,
         publishedAt: body.status === "PUBLISHED" ? new Date() : null,
       }),
-      ...(body.categoryIds !== undefined && {
-        categories: {
-          set: (body.categoryIds as string[]).map((cid) => ({ id: cid })),
-        },
+      ...(body.allowComments !== undefined && {
+        allowComments: body.allowComments,
+      }),
+      ...(body.categoryId !== undefined && {
+        categoryId: body.categoryId || null,
       }),
       ...(body.tagIds !== undefined && {
         tags: { set: (body.tagIds as string[]).map((tid) => ({ id: tid })) },
       }),
     },
     include: {
-      categories: { select: { id: true, name: true, slug: true } },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          bgColorLight: true,
+          bgColorDark: true,
+        },
+      },
       tags: { select: { id: true, name: true, slug: true } },
       author: { select: { id: true, name: true } },
     },

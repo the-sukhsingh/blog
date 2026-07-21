@@ -101,16 +101,16 @@ export default async function SearchPage({ searchParams }: Props) {
         },
       },
       {
-        categories: {
-          some: { name: { contains: query, mode: "insensitive" } },
+        category: {
+          name: { contains: query, mode: "insensitive" },
         },
       },
     ];
   }
 
   if (categorySlug) {
-    whereClause.categories = {
-      some: { slug: categorySlug },
+    whereClause.category = {
+      slug: categorySlug,
     };
   }
 
@@ -128,7 +128,7 @@ export default async function SearchPage({ searchParams }: Props) {
     orderBy: { publishedAt: "desc" },
     include: {
       author: { select: { name: true } },
-      categories: { select: { name: true, slug: true } },
+      category: { select: { name: true, slug: true } },
       tags: { select: { name: true, slug: true } },
     },
     ...(isDefaultView ? { take: 10 } : {}),
@@ -280,7 +280,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       publishedAt={post.publishedAt}
                       createdAt={post.createdAt}
                       author={post.author}
-                      categories={post.categories}
+                      category={post.category}
                       tags={post.tags}
                     />
                   ))}
@@ -323,7 +323,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       publishedAt={post.publishedAt}
                       createdAt={post.createdAt}
                       author={post.author}
-                      categories={post.categories}
+                      category={post.category}
                       tags={post.tags}
                     />
                   ))}

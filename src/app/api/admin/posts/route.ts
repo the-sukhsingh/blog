@@ -18,10 +18,21 @@ export async function GET(_request: NextRequest) {
       title: true,
       slug: true,
       status: true,
+      bgColorLight: true,
+      bgColorDark: true,
+      allowComments: true,
       createdAt: true,
       publishedAt: true,
       author: { select: { name: true } },
-      categories: { select: { id: true, name: true, slug: true } },
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          bgColorLight: true,
+          bgColorDark: true,
+        },
+      },
       tags: { select: { id: true, name: true, slug: true } },
     },
   });
@@ -44,9 +55,12 @@ export async function POST(request: NextRequest) {
     content,
     excerpt,
     coverImage,
+    bgColorLight,
+    bgColorDark,
     status,
-    categoryIds,
+    categoryId,
     tagIds,
+    allowComments,
   } = body;
 
   if (!title || !slug) {
@@ -76,18 +90,19 @@ export async function POST(request: NextRequest) {
       ),
       excerpt: excerpt ?? "",
       coverImage: coverImage ?? null,
+      bgColorLight: bgColorLight ?? null,
+      bgColorDark: bgColorDark ?? null,
       status: status ?? "DRAFT",
+      allowComments: allowComments ?? true,
       publishedAt: status === "PUBLISHED" ? new Date() : null,
       authorId,
-      categories: categoryIds?.length
-        ? { connect: (categoryIds as string[]).map((id) => ({ id })) }
-        : undefined,
+      categoryId: categoryId || null,
       tags: tagIds?.length
         ? { connect: (tagIds as string[]).map((id) => ({ id })) }
         : undefined,
     },
     include: {
-      categories: true,
+      category: true,
       tags: true,
       author: { select: { name: true } },
     },

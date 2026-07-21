@@ -29,6 +29,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Check if post exists and allows comments
+  const post = await prisma.post.findUnique({
+    where: { id: postId },
+    select: { allowComments: true },
+  });
+
+  if (!post) {
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  }
+
+  if (!post.allowComments) {
+    return NextResponse.json(
+      { error: "Comments are disabled for this post" },
+      { status: 400 },
+    );
+  }
+
   const comment = await prisma.comment.create({
     data: {
       postId,

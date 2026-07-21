@@ -22,7 +22,7 @@ export default async function EditPostPage({ params }: Props) {
   const post = await prisma.post.findUnique({
     where: { id },
     include: {
-      categories: { select: { id: true } },
+      category: { select: { id: true } },
       tags: { select: { id: true } },
     },
   });
@@ -39,8 +39,11 @@ export default async function EditPostPage({ params }: Props) {
         excerpt: post.excerpt ?? "",
         coverImage: post.coverImage ?? null,
         status: post.status,
-        categoryIds: post.categories.map((c) => c.id),
+        bgColorLight: post.bgColorLight ?? null,
+        bgColorDark: post.bgColorDark ?? null,
+        categoryId: post.categoryId ?? post.category?.id ?? null,
         tagIds: post.tags.map((t) => t.id),
+        allowComments: post.allowComments,
       }}
     />
   );

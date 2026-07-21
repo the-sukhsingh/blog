@@ -27,32 +27,38 @@ model User {
 }
 
 model Post {
-  id          String     @id @default(cuid())
-  title       String
-  slug        String     @unique
-  content     Json
-  contentText String     @default("")
-  excerpt     String?
-  coverImage  String?
-  status      PostStatus @default(DRAFT)
-  author      User       @relation(fields: [authorId], references: [id])
-  authorId    String
-  categories  Category[]
-  tags        Tag[]
-  comments    Comment[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  publishedAt DateTime?
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  content      Json
+  contentText  String     @default("")
+  excerpt      String?
+  coverImage   String?
+  bgColorLight String?
+  bgColorDark  String?
+  status       PostStatus @default(DRAFT)
+  author       User       @relation(fields: [authorId], references: [id])
+  authorId     String
+  category     Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId   String?
+  tags         Tag[]
+  comments     Comment[]
+  allowComments Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  publishedAt  DateTime?
 
   @@index([slug])
   @@index([status, publishedAt])
 }
 
 model Category {
-  id    String @id @default(cuid())
-  name  String
-  slug  String @unique
-  posts Post[]
+  id           String  @id @default(cuid())
+  name         String
+  slug         String  @unique
+  bgColorLight String?
+  bgColorDark  String?
+  posts        Post[]
 }
 
 model Tag {

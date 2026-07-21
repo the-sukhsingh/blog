@@ -15,7 +15,7 @@ export default async function HomePage() {
     orderBy: { publishedAt: "desc" },
     include: {
       author: { select: { name: true } },
-      categories: { select: { name: true, slug: true } },
+      category: { select: { name: true, slug: true } },
       tags: { select: { name: true, slug: true } },
     },
   });
@@ -87,17 +87,15 @@ export default async function HomePage() {
               </div>
               <div className="flex flex-col justify-between md:col-span-5 space-y-6 py-2">
                 <div className="space-y-4">
-                  {featuredPost.categories.length > 0 && (
+                  {featuredPost.category && (
                     <div className="flex flex-wrap gap-2">
-                      {featuredPost.categories.map((cat) => (
-                        <Link
-                          key={cat.slug}
-                          href={`/categories/${cat.slug}`}
-                          className="rounded-full bg-muted/80 hover:bg-primary hover:text-primary-foreground px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground transition-all duration-200"
-                        >
-                          {cat.name}
-                        </Link>
-                      ))}
+                      <Link
+                        key={featuredPost.category.slug}
+                        href={`/categories/${featuredPost.category.slug}`}
+                        className="rounded-full bg-muted/80 hover:bg-primary hover:text-primary-foreground px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground transition-all duration-200"
+                      >
+                        {featuredPost.category.name}
+                      </Link>
                     </div>
                   )}
 
@@ -153,7 +151,7 @@ export default async function HomePage() {
                     publishedAt={post.publishedAt}
                     createdAt={post.createdAt}
                     author={post.author}
-                    categories={post.categories}
+                    category={post.category}
                     tags={post.tags}
                   />
                 ))}

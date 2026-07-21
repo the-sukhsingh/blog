@@ -19,7 +19,7 @@ export default async function AdminPostsPage() {
       createdAt: true,
       publishedAt: true,
       author: { select: { name: true } },
-      categories: { select: { name: true } },
+      category: { select: { name: true } },
       tags: { select: { name: true } },
     },
   });

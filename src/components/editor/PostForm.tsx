@@ -11,6 +11,7 @@ import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import ArticleBackgroundWrapper from "@/components/ArticleBackgroundWrapper";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Sheet,
@@ -25,10 +26,14 @@ import TaxonomyDrawer from "./TaxonomyDrawer";
 
 const TipTapEditor = dynamic(() => import("./TipTapEditor"), { ssr: false });
 
+import { PRESET_COLOR_PALETTES } from "@/lib/colorPalettes";
+
 interface Taxonomy {
   id: string;
   name: string;
   slug: string;
+  bgColorLight?: string | null;
+  bgColorDark?: string | null;
 }
 
 interface PostFormProps {
@@ -40,8 +45,12 @@ interface PostFormProps {
     excerpt: string;
     coverImage: string | null;
     status: "DRAFT" | "PUBLISHED";
-    categoryIds: string[];
+    categoryId?: string | null;
+    categoryIds?: string[];
+    bgColorLight?: string | null;
+    bgColorDark?: string | null;
     tagIds: string[];
+    allowComments?: boolean;
   };
 }
 
@@ -66,14 +75,23 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
   const [coverImage, setCoverImage] = useState<string | null>(
     initialValues?.coverImage ?? null,
   );
+  const [bgColorLight, setBgColorLight] = useState<string | null>(
+    initialValues?.bgColorLight ?? null,
+  );
+  const [bgColorDark, setBgColorDark] = useState<string | null>(
+    initialValues?.bgColorDark ?? null,
+  );
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(
     initialValues?.status ?? "DRAFT",
   );
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    initialValues?.categoryIds ?? [],
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    initialValues?.categoryId ?? initialValues?.categoryIds?.[0] ?? null,
   );
   const [selectedTags, setSelectedTags] = useState<string[]>(
     initialValues?.tagIds ?? [],
+  );
+  const [allowComments, setAllowComments] = useState(
+    initialValues?.allowComments ?? true,
   );
 
   // Taxonomy lists
@@ -85,6 +103,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   // UI state
+  const [previewMode, setPreviewMode] = useState<"auto" | "light" | "dark">(
+    "auto",
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(isEditing);
@@ -122,7 +143,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
         [...prev, item].sort((a, b) => a.name.localeCompare(b.name)),
       );
       // Auto-select the newly created category
-      setSelectedCategories((prev) => [...prev, item.id]);
+      setSelectedCategoryId(item.id);
     } else {
       setTags((prev) =>
         [...prev, item].sort((a, b) => a.name.localeCompare(b.name)),
@@ -134,7 +155,7 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
   const handleTaxonomyDeleted = (type: "category" | "tag", id: string) => {
     if (type === "category") {
       setCategories((prev) => prev.filter((c) => c.id !== id));
-      setSelectedCategories((prev) => prev.filter((cid) => cid !== id));
+      if (selectedCategoryId === id) setSelectedCategoryId(null);
     } else {
       setTags((prev) => prev.filter((t) => t.id !== id));
       setSelectedTags((prev) => prev.filter((tid) => tid !== id));
@@ -171,12 +192,6 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
 
   // ── Toggle selection ────────────────────────────────────────────────────
 
-  const toggleCategory = (id: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
-    );
-  };
-
   const toggleTag = (id: string) => {
     setSelectedTags((prev) =>
       prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id],
@@ -201,9 +216,12 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
       content,
       excerpt: excerpt.trim(),
       coverImage: coverImage ?? null,
+      bgColorLight: bgColorLight ?? null,
+      bgColorDark: bgColorDark ?? null,
       status,
-      categoryIds: selectedCategories,
+      categoryId: selectedCategoryId,
       tagIds: selectedTags,
+      allowComments,
     };
 
     try {
@@ -299,32 +317,66 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
           </div>
         </div>
 
-        {/* Center Writing Canvas */}
-        <div className="max-w-3xl mx-auto space-y-6 px-4 pt-4">
-          <input
-            id="post-title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Title"
-            className="w-full text-4xl md:text-5xl font-black tracking-tight placeholder:opacity-30 outline-none border-none bg-transparent focus:ring-0 text-foreground py-2"
-            required
-          />
+        {/* Center Writing Canvas with Theme-Aware Live Background Preview */}
+        {(() => {
+          const selectedCat = categories.find(
+            (c) => c.id === selectedCategoryId,
+          );
+          const activeLight = bgColorLight ?? selectedCat?.bgColorLight ?? null;
+          const activeDark = bgColorDark ?? selectedCat?.bgColorDark ?? null;
+          const hasBackground = Boolean(activeLight || activeDark);
 
-          <div className="min-h-[500px]">
-            <TipTapEditor
-              content={content}
-              onChange={(json) => setContent(json)}
-              placeholder="Tell your story..."
-            />
-          </div>
+          // Custom forced preview style if user manually picked Light or Dark mode preview
+          let inlineCanvasStyle: React.CSSProperties = {};
+          if (previewMode === "light" && activeLight) {
+            inlineCanvasStyle = {
+              backgroundColor: activeLight,
+              color: "#18181b",
+            };
+          } else if (previewMode === "dark" && activeDark) {
+            inlineCanvasStyle = {
+              backgroundColor: activeDark,
+              color: "#f4f4f5",
+            };
+          }
 
-          {error && (
-            <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3 text-xs font-semibold text-destructive">
-              {error}
-            </div>
-          )}
-        </div>
+          return (
+            <ArticleBackgroundWrapper
+              bgColorLight={previewMode === "auto" ? activeLight : null}
+              bgColorDark={previewMode === "auto" ? activeDark : null}
+              className="max-w-4xl mx-auto space-y-6 p-6 md:p-8 rounded-3xl relative border border-transparent shadow-xs transition-all duration-300"
+            >
+              <div
+                style={inlineCanvasStyle}
+                className="space-y-6 rounded-2xl p-2 transition-colors duration-200"
+              >
+                <input
+                  id="post-title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Title"
+                  className="w-full text-4xl md:text-5xl font-black tracking-tight placeholder:opacity-30 outline-none border-none bg-transparent focus:ring-0 text-foreground py-2"
+                  required
+                />
+
+                <div className="min-h-[500px]">
+                  <TipTapEditor
+                    content={content}
+                    onChange={(json) => setContent(json)}
+                    placeholder="Tell your story..."
+                  />
+                </div>
+
+                {error && (
+                  <div className="rounded-xl bg-destructive/10 border border-destructive/20 px-4 py-3 text-xs font-semibold text-destructive">
+                    {error}
+                  </div>
+                )}
+              </div>
+            </ArticleBackgroundWrapper>
+          );
+        })()}
 
         {/* Slide-over Publish Settings Sheet */}
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -356,6 +408,27 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                   activeTab={status}
                   setActiveTab={(id) => setStatus(id as "DRAFT" | "PUBLISHED")}
                   className="w-full"
+                />
+              </div>
+
+              {/* Allow Comments Switch */}
+              <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-card/50">
+                <div className="space-y-0.5 pr-2">
+                  <label
+                    htmlFor="allow-comments"
+                    className="text-xs font-bold text-foreground cursor-pointer select-none"
+                  >
+                    Allow comments
+                  </label>
+                  <p className="text-[10px] text-muted-foreground leading-normal">
+                    Let readers share their thoughts and comment on this
+                    article.
+                  </p>
+                </div>
+                <Checkbox
+                  id="allow-comments"
+                  checked={allowComments}
+                  onCheckedChange={(checked) => setAllowComments(!!checked)}
                 />
               </div>
 
@@ -465,11 +538,11 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                 </div>
               </div>
 
-              {/* Categories */}
+              {/* Category (Single selection) */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between pb-1 border-b border-border/40">
                   <span className="text-xs font-semibold text-foreground">
-                    Categories
+                    Category (Select one)
                   </span>
                   <button
                     type="button"
@@ -484,26 +557,166 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                     No categories yet.
                   </p>
                 ) : (
-                  <div className="max-h-36 space-y-0.5 overflow-y-auto scrollbar-none">
-                    {categories.map((cat) => (
-                      <label
-                        key={cat.id}
-                        htmlFor={`cat-${cat.id}`}
-                        className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-colors"
-                      >
-                        <Checkbox
-                          id={`cat-${cat.id}`}
-                          checked={selectedCategories.includes(cat.id)}
-                          onCheckedChange={() => toggleCategory(cat.id)}
-                          className="size-3.5 p-1.5 cursor-pointer focus:ring-0 focus:ring-offset-0"
-                        />
-                        <span className="flex-1 truncate font-medium">
-                          {cat.name}
-                        </span>
-                      </label>
-                    ))}
+                  <div className="max-h-36 space-y-1 overflow-y-auto scrollbar-none">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCategoryId(null)}
+                      className={`w-full text-left rounded-lg px-2.5 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                        selectedCategoryId === null
+                          ? "bg-primary/10 text-primary font-semibold border border-primary/20"
+                          : "text-muted-foreground hover:bg-muted/50"
+                      }`}
+                    >
+                      <span>No Category</span>
+                    </button>
+                    {categories.map((cat) => {
+                      const isSelected = selectedCategoryId === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => setSelectedCategoryId(cat.id)}
+                          className={`w-full text-left rounded-lg px-2.5 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                            isSelected
+                              ? "bg-primary text-primary-foreground font-semibold"
+                              : "text-foreground/80 hover:bg-muted/50 hover:text-foreground border border-transparent"
+                          }`}
+                        >
+                          <span className="truncate">{cat.name}</span>
+                          {cat.bgColorLight && (
+                            <span
+                              className="w-2.5 h-2.5 rounded-full border border-border inline-block"
+                              style={{ backgroundColor: cat.bgColorLight }}
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
+              </div>
+
+              {/* Article Background Customization (Light & Dark Mode) */}
+              <div className="space-y-4 pt-3 border-t border-border/60">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-foreground block">
+                      Article Background
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">
+                      Overrides category & global theme background
+                    </span>
+                  </div>
+                  {(bgColorLight || bgColorDark) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBgColorLight(null);
+                        setBgColorDark(null);
+                      }}
+                      className="text-[10px] font-semibold text-destructive hover:underline cursor-pointer active:scale-95 transition-transform"
+                    >
+                      Clear Override
+                    </button>
+                  )}
+                </div>
+
+                {/* Preset Palettes Grid */}
+                <div className="space-y-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                    Curated Palettes
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {PRESET_COLOR_PALETTES.map((p) => {
+                      const isActive =
+                        bgColorLight === p.light && bgColorDark === p.dark;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => {
+                            setBgColorLight(p.light);
+                            setBgColorDark(p.dark);
+                          }}
+                          className={`group flex items-center justify-between p-2 rounded-xl border text-[11px] transition-all duration-150 cursor-pointer active:scale-[0.97] ${
+                            isActive
+                              ? "border-primary bg-primary/10 font-bold text-foreground ring-2 ring-primary/30 shadow-xs"
+                              : "border-border/80 hover:border-foreground/30 text-muted-foreground bg-card hover:bg-muted/30"
+                          }`}
+                        >
+                          <span className="truncate text-[10px] font-medium">
+                            {p.name}
+                          </span>
+                          <span className="flex items-center gap-1 shrink-0 ml-1.5 p-0.5 rounded-full bg-muted/60">
+                            <span
+                              className="w-3 h-3 rounded-full border border-border shadow-2xs"
+                              style={{ backgroundColor: p.light }}
+                              title={`Light: ${p.light}`}
+                            />
+                            <span
+                              className="w-3 h-3 rounded-full border border-border shadow-2xs"
+                              style={{ backgroundColor: p.dark }}
+                              title={`Dark: ${p.dark}`}
+                            />
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Independent Custom Color Selection */}
+                <div className="space-y-2 pt-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                    Custom Independent Selection
+                  </span>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="space-y-1.5 p-2.5 rounded-xl border border-border/80 bg-card">
+                      <label className="text-[10px] font-semibold text-foreground/90 block">
+                        Light Mode
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={bgColorLight || "#ffffff"}
+                          onChange={(e) => setBgColorLight(e.target.value)}
+                          className="h-7 w-8 cursor-pointer rounded-lg border border-border bg-transparent p-0.5 transition-transform active:scale-95"
+                        />
+                        <input
+                          type="text"
+                          value={bgColorLight || ""}
+                          onChange={(e) =>
+                            setBgColorLight(e.target.value || null)
+                          }
+                          placeholder="Default"
+                          className="h-7 w-full rounded-md border border-border bg-background px-2 text-[10px] font-mono outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5 p-2.5 rounded-xl border border-border/80 bg-card">
+                      <label className="text-[10px] font-semibold text-foreground/90 block">
+                        Dark Mode
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={bgColorDark || "#000000"}
+                          onChange={(e) => setBgColorDark(e.target.value)}
+                          className="h-7 w-8 cursor-pointer rounded-lg border border-border bg-transparent p-0.5 transition-transform active:scale-95"
+                        />
+                        <input
+                          type="text"
+                          value={bgColorDark || ""}
+                          onChange={(e) =>
+                            setBgColorDark(e.target.value || null)
+                          }
+                          placeholder="Default"
+                          className="h-7 w-full rounded-md border border-border bg-background px-2 text-[10px] font-mono outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Tags */}

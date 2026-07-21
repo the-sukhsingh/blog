@@ -9,7 +9,8 @@ interface PostCardProps {
   publishedAt: Date | null;
   createdAt: Date;
   author: { name: string | null };
-  categories: { name: string; slug: string }[];
+  category?: { name: string; slug: string } | null;
+  categories?: { name: string; slug: string }[];
   tags: { name: string; slug: string }[];
 }
 
@@ -21,26 +22,27 @@ export default function PostCard({
   publishedAt,
   createdAt,
   author,
+  category,
   categories,
   tags,
 }: PostCardProps) {
   const date = publishedAt ?? createdAt;
+  const activeCategory =
+    category ?? (categories && categories.length > 0 ? categories[0] : null);
 
   return (
     <article className="group grid grid-cols-1 md:grid-cols-4 gap-6 py-8 border-b border-border/40 last:border-b-0 items-start transition-colors duration-150">
       <div className="md:col-span-3 space-y-3">
-        {/* Categories */}
-        {categories.length > 0 && (
+        {/* Category */}
+        {activeCategory && (
           <div className="flex flex-wrap gap-1.5">
-            {categories.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/categories/${cat.slug}`}
-                className="rounded-full bg-muted/95 hover:bg-primary hover:text-primary-foreground px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/90 transition-all duration-200"
-              >
-                {cat.name}
-              </Link>
-            ))}
+            <Link
+              key={activeCategory.slug}
+              href={`/categories/${activeCategory.slug}`}
+              className="rounded-full bg-muted/95 hover:bg-primary hover:text-primary-foreground px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-muted-foreground/90 transition-all duration-200"
+            >
+              {activeCategory.name}
+            </Link>
           </div>
         )}
 

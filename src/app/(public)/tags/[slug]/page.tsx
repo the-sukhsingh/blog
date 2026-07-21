@@ -31,7 +31,7 @@ export default async function TagPage({ params }: Props) {
         orderBy: { publishedAt: "desc" },
         include: {
           author: { select: { name: true } },
-          categories: { select: { name: true, slug: true } },
+          category: { select: { name: true, slug: true } },
           tags: { select: { name: true, slug: true } },
         },
       },
@@ -75,7 +75,7 @@ export default async function TagPage({ params }: Props) {
               publishedAt={post.publishedAt}
               createdAt={post.createdAt}
               author={post.author}
-              categories={post.categories}
+              category={post.category}
               tags={post.tags}
             />
           ))}

@@ -23,14 +23,21 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { type, name, slug } = body;
+  const { type, name, slug, bgColorLight, bgColorDark } = body;
 
   if (!type || !name || !slug) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   if (type === "category") {
-    const category = await prisma.category.create({ data: { name, slug } });
+    const category = await prisma.category.create({
+      data: {
+        name,
+        slug,
+        bgColorLight: bgColorLight || null,
+        bgColorDark: bgColorDark || null,
+      },
+    });
     return NextResponse.json(category, { status: 201 });
   }
 
