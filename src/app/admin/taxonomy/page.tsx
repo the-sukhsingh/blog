@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import TaxonomyManager from "@/components/admin/TaxonomyManager";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Taxonomy",
 };

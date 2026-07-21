@@ -47,3 +47,7 @@ next-env.d.ts
 .impeccable/
 .kiro/
 .agents/
+
+# Docker
+.env.docker
+docker/volumes/

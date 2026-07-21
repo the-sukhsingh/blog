@@ -8,6 +8,8 @@ import TableOfContents from "@/components/TableOfContents";
 import { generateHtmlFromJSON } from "@/lib/editor";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ slug: string }>;
 };

@@ -3,6 +3,11 @@ import Link from "next/link";
 import PostCard from "@/components/PostCard";
 import { prisma } from "@/lib/prisma";
 
+// Disable static pre-rendering — Prisma queries run at request time.
+// Without this, `next build` tries to pre-render the page and fails because
+// the database isn't available during Docker image build.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "The Journal — Editorial Studio",
   description:

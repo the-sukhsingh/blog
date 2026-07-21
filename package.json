@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "node scripts/setup-env.js",
+    "setup:fresh": "node scripts/setup-env.js --overwrite",
+    "setup:show": "node scripts/setup-env.js --show",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

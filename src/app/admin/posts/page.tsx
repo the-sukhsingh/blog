@@ -4,6 +4,8 @@ import PostListTable from "@/components/admin/PostListTable";
 import { AddSquare } from "@/lib/icons";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Posts",
 };

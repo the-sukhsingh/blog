@@ -3,6 +3,8 @@ import Link from "next/link";
 import { AddSquare, Clock, Comment, PublishedPost, Users } from "@/lib/icons";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Dashboard",
 };

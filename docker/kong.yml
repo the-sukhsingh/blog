@@ -1,0 +1,74 @@
+################################################################################
+# Kong 2.8.1 — Declarative (DB-less) configuration
+#
+# Routes all Supabase API traffic through Kong as a single gateway:
+#   /auth/v1/*    → GoTrue (auth service)     port 9999
+#   /storage/v1/* → Storage API               port 5000
+#   /rest/v1/*    → PostgREST                 port 3000
+#
+# The Next.js app uses SUPABASE_URL=http://kong:8000 internally.
+# Browsers access uploaded media via SUPABASE_STORAGE_PUBLIC_URL (host port 8000).
+################################################################################
+_format_version: "1.1"
+_transform: true
+
+###############################################################################
+# Services + Routes
+###############################################################################
+services:
+
+  ## ── Auth (GoTrue) ──────────────────────────────────────────────────────────
+  - name: auth-v1
+    host: auth
+    port: 9999
+    protocol: http
+    routes:
+      - name: auth-v1-all
+        strip_path: true
+        paths:
+          - /auth/v1/
+    plugins:
+      - name: cors
+
+  ## ── Storage API ────────────────────────────────────────────────────────────
+  - name: storage-v1
+    host: storage
+    port: 5000
+    protocol: http
+    routes:
+      - name: storage-v1-all
+        strip_path: true
+        paths:
+          - /storage/v1/
+    plugins:
+      - name: cors
+
+  ## ── PostgREST ───────────────────────────────────────────────────────────────
+  - name: rest-v1
+    host: rest
+    port: 3000
+    protocol: http
+    routes:
+      - name: rest-v1-all
+        strip_path: true
+        paths:
+          - /rest/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+
+###############################################################################
+# Consumers + API keys
+# Consumers allow the anon and service_role JWTs to authenticate with PostgREST.
+# Storage and Auth handle their own JWT validation internally.
+###############################################################################
+consumers:
+  - username: anon
+    keyauth_credentials:
+      - key: ${SUPABASE_ANON_KEY}
+
+  - username: service_role
+    keyauth_credentials:
+      - key: ${SUPABASE_SERVICE_KEY}

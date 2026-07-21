@@ -1,6 +1,9 @@
 import type { Prisma } from "@prisma/client";
 import { X } from "lucide-react";
 import type { Metadata } from "next";
+
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import PostCard from "@/components/PostCard";
 import { FolderOpen, Search, Tag } from "@/lib/icons";

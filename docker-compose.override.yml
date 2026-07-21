@@ -1,0 +1,31 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# docker-compose.override.yml — Local development port overrides
+#
+# This file is automatically merged with docker-compose.yml by Docker Compose
+# when running `docker compose up`. It is NOT used in production — remove it
+# or use `docker compose -f docker-compose.yml up` to skip it.
+#
+# Exposes the internal service ports to localhost so you can use:
+#   - Supabase Studio:    http://localhost:3001
+#   - Kong (API gateway): http://localhost:8000
+#   - PostgreSQL direct:  localhost:5432  (for TablePlus, DBeaver, etc.)
+# ══════════════════════════════════════════════════════════════════════════════
+
+name: blog-cms
+
+services:
+  # Expose Kong's admin API port for debugging
+  kong:
+    ports:
+      - "8000:8000"   # Supabase API gateway (storage, auth, rest)
+      - "8443:8443"   # HTTPS variant (if configured)
+
+  # Expose Supabase Studio
+  studio:
+    ports:
+      - "3001:3000"   # Browse to http://localhost:3001
+
+  # Expose PostgreSQL directly (useful for DB GUI tools)
+  db:
+    ports:
+      - "5432:5432"

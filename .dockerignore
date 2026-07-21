@@ -1,0 +1,40 @@
+# Dependencies (installed fresh inside the build stage)
+node_modules
+
+# Next.js build output (built inside Docker)
+.next
+out
+
+# Environment files (injected at runtime via docker-compose env_file)
+.env
+.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+
+# IDE and tooling
+.vscode
+.cursor
+.claude
+.gemini
+.impeccable
+.kiro
+.agents
+
+# TypeScript build info (large, not needed)
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Docker files themselves (avoid circular context)
+docker-compose*.yml
+Dockerfile*
+README.Docker.md

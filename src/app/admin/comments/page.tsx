@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import CommentList from "@/components/admin/CommentList";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Comments",
 };

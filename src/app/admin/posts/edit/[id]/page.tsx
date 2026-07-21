@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import PostForm from "@/components/editor/PostForm";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{ id: string }>;
 };
