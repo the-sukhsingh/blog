@@ -79,7 +79,7 @@ export default async function PostDetailPage({ params }: Props) {
           <ArticleBackgroundWrapper
             bgColorLight={resolvedLight}
             bgColorDark={resolvedDark}
-            className="p-6 sm:p-8 md:p-10 border border-border/40 shadow-xs"
+            className="p-6 sm:p-8 md:p-10 shadow-xs"
           >
             <main>
               {/* Back link */}
