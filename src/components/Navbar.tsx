@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/theme/ThemeToggle";
-import { Search} from "@/lib/icons";
+import { Search } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 const links = [
   { name: "Home", href: "/" },
-  { name: "Search", href: "/search", icon: Search  }
+  { name: "Search", href: "/search", icon: Search },
 ];
 
 export default function Navbar() {

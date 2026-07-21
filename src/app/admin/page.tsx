@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AddSquare, Clock, Comment, PublishedPost, Users } from "@/lib/icons";
 import { prisma } from "@/lib/prisma";
-import { PublishedPost, Clock, Comment, Users, AddSquare } from "@/lib/icons";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -134,10 +134,11 @@ export default async function AdminDashboardPage() {
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
-                      ? "bg-green-500/10 text-green-700 dark:text-green-400"
-                      : "bg-muted text-muted-foreground"
-                      }`}
+                    className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider ${
+                      post.status === "PUBLISHED"
+                        ? "bg-green-500/10 text-green-700 dark:text-green-400"
+                        : "bg-muted text-muted-foreground"
+                    }`}
                   >
                     {post.status === "PUBLISHED" ? "Published" : "Draft"}
                   </span>

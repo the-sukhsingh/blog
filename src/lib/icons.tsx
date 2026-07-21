@@ -1,4 +1,4 @@
-import { SVGProps } from "react";
+import type { SVGProps } from "react";
 import { cn } from "./utils";
 
 export const Users = (props: SVGProps<SVGSVGElement>, className?: string) => {
@@ -1326,3 +1326,470 @@ export const Setting = ({
     </svg>
   );
 };
+
+export const TextIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M4 7V4H20V7"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 4V20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      opacity="0.4"
+      d="M9 20H15"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const Heading1Icon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M4 5V19M13 5V19M4 12H13"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M17 9L19 7V19"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const Heading2Icon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M4 5V19M12 5V19M4 12H12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M16 10C16 8.5 17.2 7 18.8 7C20.2 7 21 8 21 9.5C21 12 16 14.5 16 19H21"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const Heading3Icon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M4 5V19M12 5V19M4 12H12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M16 7H20.5L17.5 12.5C19.5 12.5 21 13.8 21 15.8C21 17.8 19.3 19.5 16.5 19.5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const BoldIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M6 4H13.5C15.9853 4 18 6.01472 18 8.5C18 10.9853 15.9853 13 13.5 13H6V4Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M6 13H14.5C16.9853 13 19 15.0147 19 17.5C19 19.9853 16.9853 22 14.5 22H6V13Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const ItalicIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M14 4L10 20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      opacity="0.4"
+      d="M10 4H18M6 20H14"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const UnderlineIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M6 4V10C6 13.3137 8.68629 16 12 16C15.3137 16 18 13.3137 18 10V4"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M4 20H20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const StrikethroughIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M17.5 8C17.5 5.5 15.2 3.5 12 3.5C8.8 3.5 6.5 5.5 6.5 8C6.5 10.2 8.2 11.5 10.5 12M6.5 16C6.5 18.5 8.8 20.5 12 20.5C15.2 20.5 17.5 18.5 17.5 16C17.5 14.2 16.3 12.8 14.5 12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      opacity="0.4"
+      d="M3 12H21"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const CodeIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M8 6L2 12L8 18M16 6L22 12L16 18"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M14 4L10 20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const QuoteIcon = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M4 11C4 7.5 6.5 4.5 10 4V7C8 7.5 7 9 7 11H10V18H4V11Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M14 11C14 7.5 16.5 4.5 20 4V7C18 7.5 17 9 17 11H20V18H14V11Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const BulletListIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M9 6H20M9 12H20M9 18H20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M4 6.5H4.01M4 12.5H4.01M4 18.5H4.01"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const OrderedListIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M10 6H20M10 12H20M10 18H20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M4 4V8M4 8H6M4 12H6V14H4V16H6M4 18H6V20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const TaskListIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <rect
+      x="3"
+      y="3"
+      width="18"
+      height="18"
+      rx="5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    />
+    <path
+      opacity="0.4"
+      d="M8 12L11 15L16 9"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const DividerIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M4 12H20"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+    <path
+      opacity="0.4"
+      d="M8 6H16M10 18H14"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const HighlighterIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M14.7 3.3L20.7 9.3L10.5 19.5H4.5V13.5L14.7 3.3Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M3 21H21M11.5 6.5L17.5 12.5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const UnlinkIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M9 17H7.5C4.47 17.5 2 15.02 2 12C2 8.98 4.47 6.5 7.5 6.5H9"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M15 6.5H16.5C19.53 6.5 22 8.98 22 12C22 15.02 19.53 17.5 16.5 17.5H15"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      opacity="0.4"
+      d="M3 3L21 21"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+export const ChevronDownIcon = ({
+  className,
+  ...props
+}: SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    className={cn("size-4", className)}
+    {...props}
+  >
+    <path
+      d="M6 9L12 15L18 9"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle
+      opacity="0.4"
+      cx="12"
+      cy="12"
+      r="9"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    />
+  </svg>
+);

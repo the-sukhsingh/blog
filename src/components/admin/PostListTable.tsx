@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { EditPen, LinkIcon, TrashCan, Search } from "@/lib/icons";
+import { EditPen, LinkIcon, Search, TrashCan } from "@/lib/icons";
 import { Badge } from "../ui/badge";
 
 interface Post {
@@ -106,9 +106,7 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
       {/* Search & Filter Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
-          <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/80"
-          />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/80" />
           <input
             type="text"
             value={search}
@@ -150,7 +148,6 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
 
       {/* Table grid */}
       <div className="rounded-2xl overflow-hidden shadow-[0_0_0_1px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08),inset_0_0_1px_1px_rgba(255,255,255,0.05)] ">
-
         <Table>
           <TableHeader>
             <TableRow>
@@ -216,7 +213,6 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                     <div className="font-mono text-[10px] text-muted-foreground/80 mt-1 select-all">
                       /posts/{post.slug}
                     </div>
-
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     {post.categories.length > 0 && (
@@ -235,10 +231,11 @@ export default function PostListTable({ initialPosts }: PostListTableProps) {
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${post.status === "PUBLISHED"
-                        ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
-                        : "bg-muted text-muted-foreground/90"
-                        }`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                        post.status === "PUBLISHED"
+                          ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                          : "bg-muted text-muted-foreground/90"
+                      }`}
                     >
                       {post.status === "PUBLISHED" ? "Published" : "Draft"}
                     </span>

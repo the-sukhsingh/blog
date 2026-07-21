@@ -7,10 +7,11 @@
  */
 
 import { ImageIcon, Loader2, Settings2, Undo2, X } from "lucide-react";
+import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import TaxonomyDrawer from "./TaxonomyDrawer";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Sheet,
   SheetContent,
@@ -19,8 +20,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ArrowLeft, Setting } from "@/lib/icons";
-import { motion } from "motion/react";
-import { Checkbox } from "@/components/ui/checkbox"
+import Tabs from "../tabs";
+import TaxonomyDrawer from "./TaxonomyDrawer";
 
 const TipTapEditor = dynamic(() => import("./TipTapEditor"), { ssr: false });
 
@@ -266,10 +267,11 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
             )}
             <span className="h-4 w-px bg-border/80" />
             <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${status === "PUBLISHED"
-                ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
-                : "bg-muted text-muted-foreground/90"
-                }`}
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+                status === "PUBLISHED"
+                  ? "bg-green-500/10 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                  : "bg-muted text-muted-foreground/90"
+              }`}
             >
               {status === "PUBLISHED" ? "Published" : "Draft"}
             </span>
@@ -290,7 +292,9 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary hover:bg-primary/95 disabled:opacity-50 h-8 px-3.5 text-xs font-bold text-primary-foreground transition-all duration-150 cursor-pointer select-none active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
               {saving && <Loader2 size={12} className="animate-spin" />}
-              <span>{saving ? "Saving…" : isEditing ? "Save Changes" : "Publish"}</span>
+              <span>
+                {saving ? "Saving…" : isEditing ? "Save Changes" : "Publish"}
+              </span>
             </button>
           </div>
         </div>
@@ -344,40 +348,15 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                 <label className="block text-xs font-semibold text-foreground select-none">
                   Post status
                 </label>
-                <div className="grid grid-cols-2 gap-1 rounded-xl bg-muted p-1 border border-border/60">
-                  <button
-                    type="button"
-                    onClick={() => setStatus("DRAFT")}
-                    className="rounded-lg py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer relative flex items-center justify-center"
-                  >
-                    {status === "DRAFT" && (
-                      <motion.span
-                        layoutId="active-status-bg"
-                        className="absolute inset-0 bg-background rounded-lg shadow-sm z-0"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                    <span className={`relative z-10 transition-colors duration-150 ${status === "DRAFT" ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
-                      Draft
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStatus("PUBLISHED")}
-                    className="rounded-lg py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 cursor-pointer relative flex items-center justify-center"
-                  >
-                    {status === "PUBLISHED" && (
-                      <motion.span
-                        layoutId="active-status-bg"
-                        className="absolute inset-0 bg-background rounded-lg shadow-sm z-0"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                    <span className={`relative z-10 transition-colors duration-150 ${status === "PUBLISHED" ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"}`}>
-                      Published
-                    </span>
-                  </button>
-                </div>
+                <Tabs
+                  tabs={[
+                    { id: "DRAFT", label: "Draft" },
+                    { id: "PUBLISHED", label: "Published" },
+                  ]}
+                  activeTab={status}
+                  setActiveTab={(id) => setStatus(id as "DRAFT" | "PUBLISHED")}
+                  className="w-full"
+                />
               </div>
 
               {/* Cover Image */}
@@ -407,10 +386,16 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                     className="flex h-24 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border/80 bg-muted/10 text-xs text-muted-foreground transition-all hover:border-foreground/30 hover:bg-muted/20 active:scale-[0.98] select-none"
                   >
                     {uploadingCover ? (
-                      <Loader2 size={18} className="animate-spin text-muted-foreground" />
+                      <Loader2
+                        size={18}
+                        className="animate-spin text-muted-foreground"
+                      />
                     ) : (
                       <>
-                        <ImageIcon size={16} className="opacity-70 text-foreground/80" />
+                        <ImageIcon
+                          size={16}
+                          className="opacity-70 text-foreground/80"
+                        />
                         <span className="font-semibold">
                           Click to upload image
                         </span>
@@ -546,10 +531,11 @@ export default function PostForm({ postId, initialValues }: PostFormProps) {
                           key={tag.id}
                           type="button"
                           onClick={() => toggleTag(tag.id)}
-                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${isSelected
-                            ? "border-primary bg-primary text-primary-foreground font-semibold"
-                            : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
-                            }`}
+                          className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-all cursor-pointer active:scale-95 ${
+                            isSelected
+                              ? "border-primary bg-primary text-primary-foreground font-semibold"
+                              : "border-border bg-background text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                          }`}
                         >
                           # {tag.name}
                         </button>

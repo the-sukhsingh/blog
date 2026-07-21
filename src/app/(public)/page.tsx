@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import PostCard from "@/components/PostCard";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "The Journal — Editorial Studio",
@@ -102,9 +102,7 @@ export default async function HomePage() {
                   )}
 
                   <h2 className="text-3xl font-extrabold tracking-tight text-foreground leading-tight sm:text-4xl hover:opacity-90 transition-opacity">
-                    <Link
-                      href={`/posts/${featuredPost.slug}`}
-                    >
+                    <Link href={`/posts/${featuredPost.slug}`}>
                       {featuredPost.title}
                     </Link>
                   </h2>

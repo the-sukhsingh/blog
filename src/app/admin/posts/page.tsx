@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PostListTable from "@/components/admin/PostListTable";
-import { prisma } from "@/lib/prisma";
 import { AddSquare } from "@/lib/icons";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Posts",

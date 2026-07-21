@@ -1,5 +1,9 @@
+import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import Underline from "@tiptap/extension-underline";
 import { generateHTML } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
 
@@ -31,6 +35,12 @@ export function generateHtmlFromJSON(json: any) {
           rel: "noopener noreferrer",
         },
       }),
+      Underline,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TaskList,
+      TaskItem,
     ]);
   } catch (e) {
     console.error("Error generating HTML from Tiptap JSON:", e);

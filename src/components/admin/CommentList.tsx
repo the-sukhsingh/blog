@@ -15,8 +15,8 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { TrashCan } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 interface Comment {
   id: string;
@@ -45,14 +45,14 @@ export function CommentCard({
   onDelete: (id: string) => Promise<boolean>;
   processingId: string | null;
   forceState?:
-  | "default"
-  | "hover"
-  | "focus"
-  | "active"
-  | "disabled"
-  | "loading"
-  | "error"
-  | "success";
+    | "default"
+    | "hover"
+    | "focus"
+    | "active"
+    | "disabled"
+    | "loading"
+    | "error"
+    | "success";
 }) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(
     forceState === "active" || false,
@@ -212,7 +212,7 @@ export function CommentCard({
               className={cn(
                 "inline-flex items-center gap-1.5 justify-center h-8 px-3.5 text-xs font-semibold rounded-[10px] bg-primary text-primary-foreground hover:bg-primary/80 disabled:opacity-60 transition-all cursor-pointer duration-100 active:scale-97",
                 (forceState === "active" || isFocused) &&
-                "ring-2 ring-primary ring-offset-2",
+                  "ring-2 ring-primary ring-offset-2",
                 forceState === "active" && "scale-97",
               )}
             >
@@ -231,7 +231,7 @@ export function CommentCard({
             className={cn(
               "inline-flex items-center gap-1.5 justify-center h-8 px-3.5 text-xs font-semibold rounded-[10px] border border-border bg-card text-foreground hover:text-destructive hover:border-destructive/30 disabled:opacity-60 transition-all cursor-pointer duration-100 active:scale-97",
               (forceState === "active" || isFocused) &&
-              "ring-2 ring-primary ring-offset-2",
+                "ring-2 ring-primary ring-offset-2",
               forceState === "active" && "scale-97",
             )}
           >
@@ -351,8 +351,6 @@ export default function CommentList({
       : activeTab === "APPROVED"
         ? approvedComments
         : comments;
-
-
 
   const tabsList = ["PENDING", "APPROVED", "ALL"] as const;
   const activeIndex = tabsList.indexOf(activeTab);

@@ -11,7 +11,6 @@ import {
   Key,
   Loader2,
   Mail,
-
   Shield,
   User,
 } from "lucide-react";
@@ -47,8 +46,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 import { AddSquare, Search } from "@/lib/icons";
+import { cn } from "@/lib/utils";
 
 interface UserData {
   id: string;
@@ -308,9 +307,7 @@ export default function UserManager({ initialUsers }: UserManagerProps) {
       {/* Search & Filter Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
-          <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/80"
-          />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/80" />
           <Input
             type="text"
             value={search}

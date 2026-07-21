@@ -1,9 +1,9 @@
 "use client";
 
-import { AddSquare, Hashtag, TrashCan } from "@/lib/icons";
 import { Loader2, Plus, Tag, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { FolderOpen } from "@/lib/icons"
+import { AddSquare, FolderOpen, Hashtag, TrashCan } from "@/lib/icons";
+
 interface Taxonomy {
   id: string;
   name: string;
@@ -180,7 +180,6 @@ export default function TaxonomyManager({
                 />
               </div>
               <div className="space-y-1.5 relative">
-
                 <label
                   htmlFor="cat-slug-input"
                   className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
@@ -277,7 +276,6 @@ export default function TaxonomyManager({
 
           {/* Add form */}
           <div className="space-y-4">
-
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <label
@@ -296,24 +294,24 @@ export default function TaxonomyManager({
                 />
               </div>
               <div className="space-y-1.5 relative">
-                  <label
-                    htmlFor="tag-slug-input"
-                    className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
+                <label
+                  htmlFor="tag-slug-input"
+                  className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight"
+                >
+                  Slug
+                </label>
+                {tagManualSlug && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTagManualSlug(false);
+                      setTagSlug(slugify(tagName));
+                    }}
+                    className="text-[9px] font-semibold text-muted-foreground hover:text-foreground underline underline-offset-1 absolute top-2 right-1"
                   >
-                    Slug
-                  </label>
-                  {tagManualSlug && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTagManualSlug(false);
-                        setTagSlug(slugify(tagName));
-                      }}
-                      className="text-[9px] font-semibold text-muted-foreground hover:text-foreground underline underline-offset-1 absolute top-2 right-1"
-                    >
-                      Reset Auto
-                    </button>
-                  )}
+                    Reset Auto
+                  </button>
+                )}
                 <input
                   id="tag-slug-input"
                   type="text"

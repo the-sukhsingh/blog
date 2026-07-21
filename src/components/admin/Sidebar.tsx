@@ -82,7 +82,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
   }, []);
 
   return (
-    <div className="sticky h-dvh left-0 top-0 z-100">
+    <div className="sticky h-dvh left-0 top-0 z-10">
       {/* Sidebar Container */}
       <motion.aside
         initial={{ width: 256 }}
@@ -94,8 +94,8 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
           {/* Brand & Toggle Header */}
           <div
             className={cn(
-              "mb-8 flex items-center h-8 px-1",
-              isCollapsed ? "justify-center" : "justify-between",
+              "mb-8 flex items-center h-8",
+              isCollapsed ? "px-0.5 justify-start" : "px-1 justify-between",
             )}
           >
             <div className="flex items-center gap-2.5">
@@ -167,7 +167,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
                   href={link.href}
                   onClick={() => setOptimisticActiveHref(link.href)}
                   className={cn(
-                    "relative flex items-center gap-3 rounded-lg p-2 text-[13px] tracking-tight font-medium transition-[color,background-color,transform] duration-150 ease-out outline-none select-none hover:translate-x-0.5 active:scale-[0.98]",
+                    "relative flex items-center gap-3 rounded-lg p-2 text-[13px] tracking-tight font-medium transition-[color,background-color,transform] duration-150 ease-out outline-none select-none active:scale-[0.98]",
                     isActive
                       ? "text-foreground font-semibold"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary/40",
@@ -178,8 +178,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
                       "scale-[0.97] bg-secondary/80 text-foreground",
                     state === "disabled" &&
                       "opacity-50 pointer-events-none cursor-not-allowed",
-                    isCollapsed &&
-                      "justify-center hover:translate-x-0 active:scale-95",
+                    isCollapsed && "hover:translate-x-0 active:scale-95",
                   )}
                   tabIndex={state === "disabled" ? -1 : 0}
                 >
@@ -261,15 +260,17 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
           {/* Bottom Controls (Sign Out and Mode Toggle) */}
           <div
             className={cn(
-              "border-t border-border/60 pt-5 flex items-center gap-2",
-              isCollapsed ? "flex-col justify-center" : "justify-between",
+              "border-t border-border/60 pt-5 flex gap-2",
+              isCollapsed
+                ? "flex-col items-start gap-4"
+                : "items-center justify-between",
             )}
           >
             <a
               href="/api/auth/signout"
               className={cn(
                 "flex items-center gap-3 rounded-lg px-2 py-2 text-xs font-semibold text-muted-foreground transition-[color,background-color,transform] duration-150 hover:bg-destructive/10 hover:text-destructive active:scale-[0.98] outline-none select-none focus-visible:ring-2 focus-visible:ring-destructive/30",
-                isCollapsed && "justify-center flex-initial py-2.5",
+                isCollapsed && "flex-initial py-2.5",
                 state === "disabled" &&
                   "opacity-50 pointer-events-none cursor-not-allowed",
               )}

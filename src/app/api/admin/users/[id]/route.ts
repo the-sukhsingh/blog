@@ -1,8 +1,8 @@
+import bcrypt from "bcryptjs";
 import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -49,7 +49,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     const data: any = {};
     if (name !== undefined) data.name = name || null;
     if (email !== undefined) data.email = email.toLowerCase().trim();
-    if (userRole !== undefined) data.role = userRole === "ADMIN" ? "ADMIN" : "EDITOR";
+    if (userRole !== undefined)
+      data.role = userRole === "ADMIN" ? "ADMIN" : "EDITOR";
     if (password) {
       if (password.length < 6) {
         return NextResponse.json(
@@ -96,7 +97,10 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   const currentUserId = (session.user as { id?: string })?.id;
   if (currentUserId === id) {
     return NextResponse.json(
-      { error: "Self-deletion is forbidden. You cannot delete your own account." },
+      {
+        error:
+          "Self-deletion is forbidden. You cannot delete your own account.",
+      },
       { status: 400 },
     );
   }
