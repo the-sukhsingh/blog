@@ -26,8 +26,25 @@ echo "✅ PostgreSQL is ready."
 # `prisma migrate deploy` applies all pending migrations in prisma/migrations/.
 # It is safe to run on every startup — already-applied migrations are skipped.
 echo "🔄 Applying database migrations..."
+PGPASSWORD="${POSTGRES_PASSWORD:-postgres}" psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "${POSTGRES_DB:-postgres}" -c '
+CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
+    "id" VARCHAR(36) PRIMARY KEY NOT NULL,
+    "checksum" VARCHAR(64) NOT NULL,
+    "finished_at" TIMESTAMPTZ,
+    "migration_name" VARCHAR(255) NOT NULL,
+    "logs" TEXT,
+    "rolled_back_at" TIMESTAMPTZ,
+    "started_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "applied_steps_count" INTEGER NOT NULL DEFAULT 0
+);
+' >/dev/null 2>&1 || true
+
 node_modules/.bin/prisma migrate deploy
 echo "✅ Migrations applied."
+
+# ── 2b. Seed initial admin user if empty ──────────────────────────────────────
+echo "🌱 Checking database seed..."
+node_modules/.bin/tsx prisma/seed.ts || true
 
 # ── 3. Set up Supabase Storage bucket (optional) ──────────────────────────────
 SUPABASE_URL="${SUPABASE_URL:-}"

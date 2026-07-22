@@ -81,7 +81,7 @@ services:
   # (NextAuth handles all authentication). However, the storage-api requires
   # GoTrue to be running for JWT validation of storage requests.
   auth:
-    image: supabase/gotrue:v2.174.0
+    image: supabase/gotrue:v2.158.1
     restart: unless-stopped
     depends_on:
       db:
@@ -229,9 +229,10 @@ services:
       KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
       KONG_DNS_ORDER: LAST,A,CNAME
-      KONG_PLUGINS: request-transformer,cors,basic-auth,oauth2,hmac-auth,jwt,key-auth
-      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
-      KONG_NGINX_PROXY_PROXY_BUFFERS: "64 160k"
+      KONG_NGINX_WORKER_PROCESSES: "1"
+      KONG_PLUGINS: cors,key-auth
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 16k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: "8 16k"
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
     volumes:
@@ -239,10 +240,10 @@ services:
     networks:
       - supabase_net
     healthcheck:
-      test: ["CMD", "kong", "health"]
-      interval: 10s
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 0"]
+      interval: 30s
       timeout: 5s
-      retries: 5
+      retries: 3
       start_period: 10s
 
   # ── Supabase Studio ──────────────────────────────────────────────────────────
