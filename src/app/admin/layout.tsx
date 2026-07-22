@@ -5,10 +5,12 @@ import Sidebar from "../../components/admin/Sidebar";
 
 export const metadata: Metadata = {
   title: {
-    default: "Admin",
-    template: "%s | Admin",
+    default: /* CONFIG:ADMIN_TITLE */ "Admin" /* /CONFIG:ADMIN_TITLE */,
+    template:
+      /* CONFIG:ADMIN_TITLE_TEMPLATE */ "%s | Admin" /* /CONFIG:ADMIN_TITLE_TEMPLATE */,
   },
-  description: "Blog CMS Administration",
+  description:
+    /* CONFIG:ADMIN_META_DESC */ "Blog CMS Administration" /* /CONFIG:ADMIN_META_DESC */,
 };
 
 export default function AdminLayout({

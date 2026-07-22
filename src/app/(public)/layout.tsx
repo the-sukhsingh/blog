@@ -3,10 +3,13 @@ import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: {
-    default: "Blog",
-    template: "%s | Blog",
+    default:
+      /* CONFIG:SITE_TITLE_DEFAULT */ "Blog" /* /CONFIG:SITE_TITLE_DEFAULT */,
+    template:
+      /* CONFIG:SITE_TITLE_TEMPLATE */ "%s | Blog" /* /CONFIG:SITE_TITLE_TEMPLATE */,
   },
-  description: "A modern blog platform with articles, categories, and tags.",
+  description:
+    /* CONFIG:SITE_META_DESC */ "A modern blog platform with articles, categories, and tags." /* /CONFIG:SITE_META_DESC */,
 };
 
 export default function PublicLayout({
@@ -22,7 +25,9 @@ export default function PublicLayout({
       </main>
 
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} Blog. All rights reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} {/* CONFIG:FOOTER_TEXT */}Blog. All rights reserved.{/* /CONFIG:FOOTER_TEXT */}
+        </p>
       </footer>
     </div>
   );

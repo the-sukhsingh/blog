@@ -66,9 +66,7 @@ function randomPassword(length = 32) {
 
 /** Encode a value as Base64URL (no padding). */
 function b64url(value) {
-  return Buffer.from(
-    typeof value === "string" ? value : JSON.stringify(value)
-  )
+  return Buffer.from(typeof value === "string" ? value : JSON.stringify(value))
     .toString("base64")
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
@@ -96,10 +94,7 @@ function createJWT(payload, secret) {
 /** Replace a variable value in a .env-style string. Handles inline comments. */
 function setEnvVar(content, key, value) {
   // Match: KEY=<anything up to EOL> (with or without inline # comment)
-  const re = new RegExp(
-    `^(${key}=)[^\\n]*`,
-    "m"
-  );
+  const re = new RegExp(`^(${key}=)[^\\n]*`, "m");
   if (re.test(content)) {
     return content.replace(re, `$1${value}`);
   }
@@ -119,13 +114,17 @@ const DEST = path.join(ROOT, ".env");
 
 // ── Banner ────────────────────────────────────────────────────────────────────
 console.log();
-console.log(`${bold(blue("  Blog CMS"))}  ${dim("·")}  ${cyan("Environment Setup")}`);
+console.log(
+  `${bold(blue("  Blog CMS"))}  ${dim("·")}  ${cyan("Environment Setup")}`,
+);
 console.log(dim("  ─────────────────────────────────────────"));
 console.log();
 
 // ── Guard: .env.example must exist ───────────────────────────────────────────
 if (!fs.existsSync(EXAMPLE)) {
-  console.error(red("  ✖  .env.example not found. Run this script from the project root."));
+  console.error(
+    red("  ✖  .env.example not found. Run this script from the project root."),
+  );
   process.exit(1);
 }
 
@@ -134,7 +133,9 @@ if (!SHOW_ONLY && fs.existsSync(DEST) && !FORCE) {
   console.log(yellow("  ⚠  .env already exists."));
   console.log(dim("     To regenerate all secrets and overwrite it, run:\n"));
   console.log(`     ${bold("npm run setup:fresh")}`);
-  console.log(dim("\n     To preview generated values without writing, run:\n"));
+  console.log(
+    dim("\n     To preview generated values without writing, run:\n"),
+  );
   console.log(`     ${bold("npm run setup:show")}`);
   console.log();
   process.exit(0);
@@ -152,12 +153,12 @@ const JWT_SECRET = randomBase64(32);
 
 const SUPABASE_ANON_KEY = createJWT(
   { role: "anon", iss: "supabase", iat: now, exp },
-  JWT_SECRET
+  JWT_SECRET,
 );
 
 const SUPABASE_SERVICE_KEY = createJWT(
   { role: "service_role", iss: "supabase", iat: now, exp },
-  JWT_SECRET
+  JWT_SECRET,
 );
 
 // ── Build the DATABASE_URL using the generated password ───────────────────────
@@ -165,11 +166,11 @@ const DATABASE_URL = `postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/postgre
 
 // ── Print generated values table ──────────────────────────────────────────────
 const rows = [
-  ["NEXTAUTH_SECRET",    NEXTAUTH_SECRET],
-  ["POSTGRES_PASSWORD",  POSTGRES_PASSWORD],
-  ["DATABASE_URL",       DATABASE_URL],
-  ["JWT_SECRET",         JWT_SECRET],
-  ["SUPABASE_ANON_KEY",  SUPABASE_ANON_KEY.slice(0, 40) + "…"],
+  ["NEXTAUTH_SECRET", NEXTAUTH_SECRET],
+  ["POSTGRES_PASSWORD", POSTGRES_PASSWORD],
+  ["DATABASE_URL", DATABASE_URL],
+  ["JWT_SECRET", JWT_SECRET],
+  ["SUPABASE_ANON_KEY", SUPABASE_ANON_KEY.slice(0, 40) + "…"],
   ["SUPABASE_SERVICE_KEY", SUPABASE_SERVICE_KEY.slice(0, 40) + "…"],
 ];
 
@@ -181,7 +182,9 @@ console.log();
 
 if (SHOW_ONLY) {
   // Print raw values suitable for copy-paste
-  console.log(dim("  ── Raw values ───────────────────────────────────────────────"));
+  console.log(
+    dim("  ── Raw values ───────────────────────────────────────────────"),
+  );
   console.log();
   console.log(`NEXTAUTH_SECRET=${NEXTAUTH_SECRET}`);
   console.log(`POSTGRES_PASSWORD=${POSTGRES_PASSWORD}`);
@@ -196,27 +199,35 @@ if (SHOW_ONLY) {
 // ── Patch .env.example with generated values ──────────────────────────────────
 let content = fs.readFileSync(EXAMPLE, "utf8");
 
-content = setEnvVar(content, "NEXTAUTH_SECRET",    NEXTAUTH_SECRET);
-content = setEnvVar(content, "POSTGRES_PASSWORD",  POSTGRES_PASSWORD);
-content = setEnvVar(content, "DATABASE_URL",       DATABASE_URL);
-content = setEnvVar(content, "JWT_SECRET",         JWT_SECRET);
-content = setEnvVar(content, "SUPABASE_ANON_KEY",  SUPABASE_ANON_KEY);
+content = setEnvVar(content, "NEXTAUTH_SECRET", NEXTAUTH_SECRET);
+content = setEnvVar(content, "POSTGRES_PASSWORD", POSTGRES_PASSWORD);
+content = setEnvVar(content, "DATABASE_URL", DATABASE_URL);
+content = setEnvVar(content, "JWT_SECRET", JWT_SECRET);
+content = setEnvVar(content, "SUPABASE_ANON_KEY", SUPABASE_ANON_KEY);
 content = setEnvVar(content, "SUPABASE_SERVICE_KEY", SUPABASE_SERVICE_KEY);
 
 // ── Write .env ────────────────────────────────────────────────────────────────
 fs.writeFileSync(DEST, content, "utf8");
 
 const action = FORCE && fs.existsSync(DEST) ? "Overwritten" : "Created";
-console.log(`  ${green("✔")}  ${bold(".env")} ${action.toLowerCase()} at ${dim(DEST)}`);
+console.log(
+  `  ${green("✔")}  ${bold(".env")} ${action.toLowerCase()} at ${dim(DEST)}`,
+);
 console.log();
 
 // ── Post-install checklist ────────────────────────────────────────────────────
-console.log(dim("  ── Still needed ─────────────────────────────────────────────"));
+console.log(
+  dim("  ── Still needed ─────────────────────────────────────────────"),
+);
 console.log();
 console.log(`  ${yellow("!")}  Open ${bold(".env")} and set:`);
 console.log();
-console.log(`     ${cyan("NEXTAUTH_URL")}          ${dim("→ http://localhost:3000  (or your domain)")}`);
-console.log(`     ${cyan("SUPABASE_STORAGE_PUBLIC_URL")}  ${dim("→ http://localhost:8000  (browser-facing)")}`);
+console.log(
+  `     ${cyan("NEXTAUTH_URL")}          ${dim("→ http://localhost:3000  (or your domain)")}`,
+);
+console.log(
+  `     ${cyan("SUPABASE_STORAGE_PUBLIC_URL")}  ${dim("→ http://localhost:8000  (browser-facing)")}`,
+);
 console.log();
 console.log(dim("  Everything else is already filled in."));
 console.log();

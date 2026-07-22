@@ -4,7 +4,8 @@ import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
   title: "Sign In",
-  description: "Sign in to access the Blog CMS.",
+  description:
+    /* CONFIG:ADMIN_LOGIN_META_DESC */ "Blog CMS Administration" /* /CONFIG:ADMIN_LOGIN_META_DESC */,
 };
 
 export default function AdminLoginPage() {
@@ -15,9 +16,11 @@ export default function AdminLoginPage() {
           <span className="mb-4 inline-block rounded bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground">
             CMS
           </span>
-          <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {/* CONFIG:ADMIN_LOGIN_TITLE */}Welcome back{/* /CONFIG:ADMIN_LOGIN_TITLE */}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Sign in to your account to continue.
+            {/* CONFIG:ADMIN_LOGIN_DESC */}Sign in to your account to continue.{/* /CONFIG:ADMIN_LOGIN_DESC */}
           </p>
         </div>
 

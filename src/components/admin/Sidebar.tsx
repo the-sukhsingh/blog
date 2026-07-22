@@ -108,11 +108,13 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
               >
                 {isCollapsed ? (
                   <>
-                    <span className="group-hover:hidden">E</span>
+                    <span className="group-hover:hidden">
+                      {/* CONFIG:ADMIN_BRAND_INITIAL */}S{/* /CONFIG:ADMIN_BRAND_INITIAL */}
+                    </span>
                     <SidebarRight className="hidden group-hover:block size-3.5" />
                   </>
                 ) : (
-                  "E"
+                  /* CONFIG:ADMIN_BRAND_INITIAL */ "S" /* /CONFIG:ADMIN_BRAND_INITIAL */
                 )}
               </button>
               <AnimatePresence mode="popLayout" initial={false}>
@@ -124,7 +126,7 @@ const Sidebar = ({ state, defaultCollapsed = false }: SidebarProps) => {
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     className="font-mono text-xs font-bold tracking-[0.2em] text-foreground uppercase whitespace-nowrap"
                   >
-                    Studio
+                    {/* CONFIG:ADMIN_BRAND_NAME */}Studio{/* /CONFIG:ADMIN_BRAND_NAME */}
                   </motion.span>
                 )}
               </AnimatePresence>

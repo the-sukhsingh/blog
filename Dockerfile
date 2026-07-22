@@ -33,11 +33,14 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy all source files
 COPY . .
 
-# 1. Generate the Prisma client (must run before `next build` so the
+# 1. Apply static site configuration
+RUN node scripts/apply-config.js
+
+# 2. Generate the Prisma client (must run before `next build` so the
 #    generated types are available for TypeScript compilation)
 RUN npx prisma generate
 
-# 2. Build Next.js in standalone mode
+# 3. Build Next.js in standalone mode
 #    Produces: .next/standalone/ (self-contained server)
 #              .next/static/     (static assets)
 RUN npm run build
@@ -70,9 +73,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static     ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public           ./public
 
-# ── Prisma & Node Modules ─────────────────────────────────────────────────────
+# ── Prisma, Configuration & Node Modules ──────────────────────────────────────
 COPY --from=builder --chown=nextjs:nodejs /app/prisma           ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/configuration.ts ./configuration.ts
+COPY --from=builder --chown=nextjs:nodejs /app/scripts          ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules     ./node_modules
 
 # ── Entrypoint ────────────────────────────────────────────────────────────────

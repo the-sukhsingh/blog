@@ -46,6 +46,30 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       }
     }
 
+    // Prevent demoting the last admin user
+    if (userRole !== undefined && userRole !== "ADMIN") {
+      const targetUser = await prisma.user.findUnique({
+        where: { id },
+        select: { role: true },
+      });
+
+      if (targetUser?.role === "ADMIN") {
+        const adminCount = await prisma.user.count({
+          where: { role: "ADMIN" },
+        });
+
+        if (adminCount <= 1) {
+          return NextResponse.json(
+            {
+              error:
+                "Cannot demote the only admin user. At least one administrator account must exist.",
+            },
+            { status: 400 },
+          );
+        }
+      }
+    }
+
     const data: any = {};
     if (name !== undefined) data.name = name || null;
     if (email !== undefined) data.email = email.toLowerCase().trim();
@@ -106,6 +130,33 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   }
 
   try {
+    // Check if user exists and if they are an admin
+    const targetUser = await prisma.user.findUnique({
+      where: { id },
+      select: { role: true },
+    });
+
+    if (!targetUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Prevent deletion of the last admin user
+    if (targetUser.role === "ADMIN") {
+      const adminCount = await prisma.user.count({
+        where: { role: "ADMIN" },
+      });
+
+      if (adminCount <= 1) {
+        return NextResponse.json(
+          {
+            error:
+              "Cannot delete the only admin user. At least one administrator account must exist.",
+          },
+          { status: 400 },
+        );
+      }
+    }
+
     // Delete user
     await prisma.user.delete({ where: { id } });
     return new NextResponse(null, { status: 204 });

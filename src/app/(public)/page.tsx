@@ -9,9 +9,10 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "The Journal — Editorial Studio",
+  title:
+    /* CONFIG:HOMEPAGE_META_TITLE */ "The Journal — Editorial Studio" /* /CONFIG:HOMEPAGE_META_TITLE */,
   description:
-    "Thoughtful essays, reviews, and technical guides written by content editors and publishers.",
+    /* CONFIG:HOMEPAGE_META_DESC */ "Thoughtful essays, reviews, and technical guides written by content editors and publishers." /* /CONFIG:HOMEPAGE_META_DESC */,
 };
 
 export default async function HomePage() {
@@ -35,16 +36,16 @@ export default async function HomePage() {
         <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4">
           <div>
             <h1 className="font-heading text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-              The Journal
+              {/* CONFIG:HOMEPAGE_HERO_TITLE */}The Journal{/* /CONFIG:HOMEPAGE_HERO_TITLE */}
             </h1>
             <p className="mt-4 text-base text-muted-foreground max-w-xl leading-relaxed">
-              Thoughtful essays, reviews, and technical guides. Written by
-              content editors and publishers of The Editorial Studio.
+              {/* CONFIG:HOMEPAGE_HERO_DESC */}Thoughtful essays, reviews, and technical guides. Written by content editors and publishers of The Editorial Studio.{/* /CONFIG:HOMEPAGE_HERO_DESC */}
             </p>
           </div>
           <div className="hidden md:block text-right">
             <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground/70">
-              Est. {new Date().getFullYear()} &middot; Publishing Live
+              Est. {new Date().getFullYear()} &middot;{" "}
+              {/* CONFIG:HOMEPAGE_BADGE */}Publishing Live{/* /CONFIG:HOMEPAGE_BADGE */}
             </span>
           </div>
         </div>
@@ -53,17 +54,16 @@ export default async function HomePage() {
       {posts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-24 text-center text-muted-foreground bg-muted/10 max-w-2xl mx-auto">
           <p className="text-base font-semibold text-foreground">
-            No articles published yet.
+            {/* CONFIG:HOMEPAGE_EMPTY_TITLE */}No articles published yet.{/* /CONFIG:HOMEPAGE_EMPTY_TITLE */}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Head over to the{" "}
+            {/* CONFIG:HOMEPAGE_EMPTY_DESC */}Head over to the Admin CMS to publish your first piece.{/* /CONFIG:HOMEPAGE_EMPTY_DESC */}{" "}
             <Link
               href="/admin/posts/new"
               className="underline hover:text-foreground font-medium transition-colors"
             >
               Admin CMS
-            </Link>{" "}
-            to publish your first piece.
+            </Link>
           </p>
         </div>
       ) : (
@@ -142,7 +142,7 @@ export default async function HomePage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-border/60">
                 <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground font-semibold">
-                  Latest Stories
+                  {/* CONFIG:HOMEPAGE_LATEST_STORIES */}Latest Stories{/* /CONFIG:HOMEPAGE_LATEST_STORIES */}
                 </h3>
               </div>
               <div className="divide-y divide-border/10">

@@ -308,6 +308,8 @@ services:
       SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       SUPABASE_BUCKET: ${SUPABASE_BUCKET:-blog-media}
+    volumes:
+      - ./configuration.ts:/app/configuration.ts:ro
     networks:
       - supabase_net
     ports:

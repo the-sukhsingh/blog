@@ -24,6 +24,59 @@ Designed with clean typography, responsive themes (light/dark mode), a full-feat
 
 ---
 
+## ⚙️ Static Site Configuration (`configuration.ts`)
+
+The website's static content — including site titles, navbar text, brand logos/prefixes, homepage hero copy, badge text, empty state copy, admin panel headings, and footer copyright text — is configured in a single top-level configuration file: [`configuration.ts`](file:///e:/Projects/blog/configuration.ts).
+
+### Customizing Site Content
+
+Edit [`configuration.ts`](file:///e:/Projects/blog/configuration.ts) at the root of the project to change static copy:
+
+```ts
+export const siteConfig: SiteConfig = {
+  site: {
+    name: "Editorial Studio",
+    brandPrefix: "The",
+    brandName: "Editorial Studio",
+    footerText: "Blog. All rights reserved.",
+  },
+  navbar: {
+    brandPrefix: "The",
+    brandName: "Editorial Studio",
+    links: [
+      { name: "Home", href: "/" },
+      { name: "Search", href: "/search", icon: "Search" },
+    ],
+  },
+  homepage: {
+    heroTitle: "The Journal",
+    heroDescription: "Thoughtful essays, reviews, and technical guides.",
+    badgeText: "Publishing Live",
+    latestStoriesTitle: "Latest Stories",
+  },
+  admin: {
+    title: "Admin",
+    brandName: "Studio",
+    loginTitle: "Welcome back",
+    loginDescription: "Sign in to your account to continue.",
+  },
+};
+```
+
+### Automatic Docker & Build Synchronization
+
+When running **Docker Compose** or local development commands:
+- **`docker compose up`**: The container entrypoint ([`docker/entrypoint.sh`](file:///e:/Projects/blog/docker/entrypoint.sh)) automatically executes `node scripts/apply-config.js` prior to startup.
+- **Docker Build**: The multi-stage [`Dockerfile`](file:///e:/Projects/blog/Dockerfile) automatically runs `node scripts/apply-config.js` before compiling the standalone Next.js application.
+- **Local Dev / Build**: `npm run dev` and `npm run build` trigger the `predev` / `prebuild` hooks (`npm run config:apply`) to sync configuration to `src/configuration.ts`.
+
+To manually apply changes to the static site content at any time:
+```bash
+npm run config:apply
+```
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Components, Turbopack) & [React 19](https://react.dev/)
@@ -34,23 +87,27 @@ Designed with clean typography, responsive themes (light/dark mode), a full-feat
 - **Styling & UI**: Tailwind CSS v4, Base UI, Lucide Icons, Framer Motion
 - **Containerization**: Docker & Docker Compose (Multi-stage lightweight build)
 
----
+## 🚀 Deployment & Hosting Freedom
 
-## ⚡ Quick Start (Docker)
+Choose the deployment architecture that fits your needs:
 
-Run the entire application stack (Next.js CMS, PostgreSQL, Supabase Storage, Kong Gateway, Supabase Studio) with **a single command**:
-
-### Linux / macOS
+### Option A: Self-Hosted Docker Stack (Docker Compose)
+Run the entire application stack (Next.js CMS, PostgreSQL, Supabase Storage, Kong Gateway, Supabase Studio) locally or on a VPS:
 ```bash
 cp .env.example .env && docker compose up -d --build
 ```
 
-### Windows (PowerShell)
-```powershell
-cp .env.example .env; docker compose up -d --build
-```
+### Option B: Cloud Hosting (Vercel / Netlify / Render + Cloud Supabase)
+Deploy Next.js to **Vercel** or any custom host while connecting to managed **Cloud Supabase** (PostgreSQL + Cloud Storage):
+1. Create a project at [Supabase.com](https://supabase.com).
+2. Configure `.env` credentials (`DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`).
+3. Run automated cloud setup:
+   ```bash
+   npm run setup:cloud
+   ```
+4. Deploy to Vercel or your hosting provider.
 
-> **Note**: Database schema migrations and default admin seeding run automatically on initial startup.
+👉 **Full Cloud Setup Guide**: See [`README.Cloud.md`](file:///e:/Projects/blog/README.Cloud.md) for detailed step-by-step instructions.
 
 ---
 
@@ -136,6 +193,7 @@ blog/
 │   ├── app/                # Next.js App Router (Public routes & /admin)
 │   ├── components/         # React UI components (Admin, Blog, Editor)
 │   └── lib/                # Shared utilities (Prisma client, NextAuth, Supabase)
+├── configuration.ts        # Static site configuration (titles, navbar, hero, etc.)
 ├── Dockerfile              # Multi-stage production build
 ├── docker-compose.yml      # Docker Compose stack specification
 ├── package.json            # Dependencies & npm scripts
@@ -146,9 +204,10 @@ blog/
 
 ## 📜 Available NPM Scripts
 
-- `npm run dev` — Starts Next.js development server.
-- `npm run build` — Builds the production Next.js standalone app.
+- `npm run dev` — Starts Next.js development server (runs `config:apply` pre-hook).
+- `npm run build` — Builds the production Next.js standalone app (runs `config:apply` pre-hook).
 - `npm run start` — Starts the Next.js production server.
+- `npm run config:apply` — Applies static site content from `configuration.ts` to `src/configuration.ts`.
 - `npm run setup` — Generates secrets and `.env` file automatically.
 - `npm run setup:fresh` — Overwrites and regenerates all secrets in `.env`.
 - `npm run seed` — Runs database seeding script (`prisma/seed.ts`).

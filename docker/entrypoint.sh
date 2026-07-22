@@ -11,6 +11,11 @@
 # ══════════════════════════════════════════════════════════════════════════════
 set -e
 
+# ── 0. Apply static configuration ─────────────────────────────────────────────
+if [ -f "scripts/apply-config.js" ]; then
+  node scripts/apply-config.js || true
+fi
+
 # ── 1. Wait for PostgreSQL ────────────────────────────────────────────────────
 POSTGRES_HOST="${POSTGRES_HOST:-db}"
 POSTGRES_PORT="${POSTGRES_PORT:-5432}"

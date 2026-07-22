@@ -6,10 +6,12 @@ import { ModeToggle } from "@/components/theme/ThemeToggle";
 import { Search } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
+// CONFIG:NAVBAR_LINKS_START
 const links = [
   { name: "Home", href: "/" },
-  { name: "Search", href: "/search", icon: Search },
+  { name: "Search", href: "/search", icon: Search }
 ];
+// CONFIG:NAVBAR_LINKS_END
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -19,10 +21,10 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:py-5">
         <Link href="/" className="flex items-center gap-1.5 group select-none">
           <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground/80 transition-colors group-hover:text-foreground">
-            The
+            {/* CONFIG:NAVBAR_BRAND_PREFIX */}{/* /CONFIG:NAVBAR_BRAND_PREFIX */}
           </span>
           <span className="font-heading text-lg font-black tracking-tight text-foreground transition-colors">
-            Editorial Studio
+            {/* CONFIG:NAVBAR_BRAND_NAME */}Sukh Studio{/* /CONFIG:NAVBAR_BRAND_NAME */}
           </span>
         </Link>
 

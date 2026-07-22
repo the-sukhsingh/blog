@@ -83,9 +83,7 @@ export async function POST(request: NextRequest) {
     // externally accessible URL. For cloud deployments both are the same, so
     // SUPABASE_STORAGE_PUBLIC_URL can simply be left unset (falls back to SUPABASE_URL).
     const publicBase =
-      process.env.SUPABASE_STORAGE_PUBLIC_URL ??
-      process.env.SUPABASE_URL ??
-      "";
+      process.env.SUPABASE_STORAGE_PUBLIC_URL ?? process.env.SUPABASE_URL ?? "";
     const publicUrl = `${publicBase}/storage/v1/object/public/${STORAGE_BUCKET}/${data.path}`;
 
     return NextResponse.json({ url: publicUrl, path: data.path });
