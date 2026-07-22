@@ -1,5 +1,5 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# docker-compose.yml — Full self-hosted Supabase + Next.js Blog CMS stack
+# docker-compose.yml — Zero-Config Self-hosted Supabase + Next.js Blog CMS stack
 #
 # Services:
 #   db        Supabase PostgreSQL 15 (with extensions)
@@ -8,13 +8,12 @@
 #   meta      postgres-meta (DB introspection API — used by Studio)
 #   storage   Supabase Storage API
 #   imgproxy  Image transformation service (used by storage for resizing)
-#   kong      API gateway (routes /auth, /storage, /rest)
-#   studio    Supabase Studio dashboard (DB GUI)
-#   app       Next.js Blog CMS (built from local Dockerfile)
+#   kong      API gateway (routes /auth, /storage, /rest on port 8000)
+#   studio    Supabase Studio dashboard (DB GUI on port 3001)
+#   app       Next.js Blog CMS (built from local Dockerfile on port 3000)
 #
 # Usage:
-#   cp .env.example .env   # fill in secrets
-#   docker compose up -d   # start everything
+#   docker compose up -d        # start full stack (zero configuration needed!)
 #   docker compose logs -f app  # watch the app start
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -24,8 +23,6 @@ name: blog-cms
 # Networks
 ###############################################################################
 networks:
-  # Internal network — all services communicate on this network.
-  # Only the necessary ports are published to the host.
   supabase_net:
     driver: bridge
 
@@ -33,14 +30,10 @@ networks:
 # Volumes
 ###############################################################################
 volumes:
-  # PostgreSQL data — all database tables, rows, and indexes
   db-data:
     driver: local
-
-  # Supabase Storage file data — all uploaded media files
   storage-data:
     driver: local
-
 
 ###############################################################################
 # Services
@@ -48,10 +41,6 @@ volumes:
 services:
 
   # ── PostgreSQL ──────────────────────────────────────────────────────────────
-  # supabase/postgres is PostgreSQL 15 pre-configured with Supabase extensions:
-  # uuid-ossp, pgsodium, pg_graphql, pg_stat_statements, pgcrypto, and more.
-  # It also initialises the auth and storage schemas required by GoTrue and
-  # the storage-api on first startup.
   db:
     image: supabase/postgres:15.8.1.080
     restart: unless-stopped
@@ -59,11 +48,11 @@ services:
       POSTGRES_HOST: /var/run/postgresql
       PGPORT: ${POSTGRES_PORT:-5432}
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
-      PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-super_secret_postgres_password_123}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-super_secret_postgres_password_123}
       PGDATABASE: ${POSTGRES_DB:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_32_characters_long_123}
       JWT_EXP: ${JWT_EXPIRY:-3600}
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -77,9 +66,6 @@ services:
       start_period: 10s
 
   # ── GoTrue (Auth service) ───────────────────────────────────────────────────
-  # GoTrue handles Supabase Auth. We do NOT use Supabase Auth in this app
-  # (NextAuth handles all authentication). However, the storage-api requires
-  # GoTrue to be running for JWT validation of storage requests.
   auth:
     image: supabase/gotrue:v2.158.1
     restart: unless-stopped
@@ -91,7 +77,7 @@ services:
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
       GOTRUE_DB_DRIVER: postgres
-      GOTRUE_DB_DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
+      GOTRUE_DB_DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-super_secret_postgres_password_123}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
       GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
       GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS:-}
       GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-true}
@@ -99,7 +85,7 @@ services:
       GOTRUE_JWT_AUD: authenticated
       GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
-      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_32_characters_long_123}
       GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-false}
       GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
       GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:-admin@example.com}
@@ -117,9 +103,6 @@ services:
       - supabase_net
 
   # ── PostgREST ────────────────────────────────────────────────────────────────
-  # Provides a RESTful API over the PostgreSQL database.
-  # Not used by our Next.js app (we use Prisma directly) but required
-  # for Supabase Studio to function.
   rest:
     image: postgrest/postgrest:v12.2.0
     restart: unless-stopped
@@ -127,18 +110,17 @@ services:
       db:
         condition: service_healthy
     environment:
-      PGRST_DB_URI: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
+      PGRST_DB_URI: postgresql://postgres:${POSTGRES_PASSWORD:-super_secret_postgres_password_123}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
       PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public,storage}
       PGRST_DB_ANON_ROLE: anon
-      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_32_characters_long_123}
       PGRST_DB_USE_LEGACY_GUCS: "false"
-      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_32_characters_long_123}
       PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
     networks:
       - supabase_net
 
   # ── postgres-meta ────────────────────────────────────────────────────────────
-  # Database introspection API consumed by Supabase Studio.
   meta:
     image: supabase/postgres-meta:v0.84.2
     restart: unless-stopped
@@ -151,13 +133,11 @@ services:
       PG_META_DB_PORT: ${POSTGRES_PORT:-5432}
       PG_META_DB_NAME: ${POSTGRES_DB:-postgres}
       PG_META_DB_USER: postgres
-      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD:-super_secret_postgres_password_123}
     networks:
       - supabase_net
 
   # ── imgproxy ─────────────────────────────────────────────────────────────────
-  # On-the-fly image processing (resize, crop, format conversion).
-  # Invoked by storage-api for image transformations.
   imgproxy:
     image: darthsim/imgproxy:v3.8.0
     restart: unless-stopped
@@ -172,9 +152,6 @@ services:
       - supabase_net
 
   # ── Storage API ──────────────────────────────────────────────────────────────
-  # Supabase Storage API — S3-compatible object storage backed by the local
-  # filesystem. Stores files in the storage-data volume and records metadata
-  # in the PostgreSQL storage schema.
   storage:
     image: supabase/storage-api:v1.11.13
     restart: unless-stopped
@@ -186,37 +163,27 @@ services:
       imgproxy:
         condition: service_started
     environment:
-      ANON_KEY: ${SUPABASE_ANON_KEY:?SUPABASE_ANON_KEY is required}
-      SERVICE_KEY: ${SUPABASE_SERVICE_KEY:?SUPABASE_SERVICE_KEY is required}
+      ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjI1MDAwMDAwMDB9.3tomIeyNGrqv-T95pnouk4OsMPKO-FZm5XpsQdrJLc8}
+      SERVICE_KEY: ${SUPABASE_SERVICE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjUwMDAwMDAwMH0.CqUNvoaexyAipJyzuDKjgINP_827FDmYWpyIHD8jEMQ}
       POSTGREST_URL: http://rest:3000
-      PGRST_JWT_SECRET: ${JWT_SECRET}
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
+      PGRST_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_32_characters_long_123}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-super_secret_postgres_password_123}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
       FILE_SIZE_LIMIT: "52428800"
       STORAGE_BACKEND: file
       FILE_STORAGE_BACKEND_PATH: /var/lib/storage
       TENANT_ID: stub
-      # NOTE: REGION is just a label for single-node local deployments.
       REGION: local
       GLOBAL_S3_BUCKET: supa-storage-local
       IMGPROXY_URL: http://imgproxy:8080
       ENABLE_IMAGE_TRANSFORMATION: "true"
-      AUTH_JWT_SECRET: ${JWT_SECRET}
+      AUTH_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_key_32_characters_long_123}
       SERVER_PORT: 5000
     volumes:
       - storage-data:/var/lib/storage
     networks:
       - supabase_net
-    # No healthcheck: the storage-api image does not ship wget/curl.
-    # Kong depends on it via service_started (storage starts in ~3s).
 
   # ── Kong API Gateway ─────────────────────────────────────────────────────────
-  # Single entry point for all Supabase API traffic.
-  # Runs in DB-less (declarative) mode — no Kong database needed.
-  #
-  # Routes:
-  #   /auth/v1/*    → auth:9999
-  #   /storage/v1/* → storage:5000
-  #   /rest/v1/*    → rest:3000
   kong:
     image: kong:2.8.1
     restart: unless-stopped
@@ -233,8 +200,10 @@ services:
       KONG_PLUGINS: cors,key-auth
       KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 16k
       KONG_NGINX_PROXY_PROXY_BUFFERS: "8 16k"
-      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
-      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjI1MDAwMDAwMDB9.3tomIeyNGrqv-T95pnouk4OsMPKO-FZm5XpsQdrJLc8}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjUwMDAwMDAwMH0.CqUNvoaexyAipJyzuDKjgINP_827FDmYWpyIHD8jEMQ}
+    ports:
+      - "8000:8000"
     volumes:
       - ./docker/kong.yml:/var/lib/kong/kong.yml:ro
     networks:
@@ -247,8 +216,6 @@ services:
       start_period: 10s
 
   # ── Supabase Studio ──────────────────────────────────────────────────────────
-  # Web-based database management UI.
-  # Accessible at http://localhost:3001 (via override file in dev).
   studio:
     image: supabase/studio:20250113-83c9420
     restart: unless-stopped
@@ -259,25 +226,21 @@ services:
         condition: service_started
     environment:
       STUDIO_PG_META_URL: http://meta:8080
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-super_secret_postgres_password_123}
       DEFAULT_ORGANIZATION_NAME: My Blog CMS
       DEFAULT_PROJECT_NAME: Blog CMS (Docker)
       SUPABASE_URL: http://kong:8000
       SUPABASE_PUBLIC_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
-      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
-      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjI1MDAwMDAwMDB9.3tomIeyNGrqv-T95pnouk4OsMPKO-FZm5XpsQdrJLc8}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjUwMDAwMDAwMH0.CqUNvoaexyAipJyzuDKjgINP_827FDmYWpyIHD8jEMQ}
       NEXT_PUBLIC_ENABLE_LOGS: "false"
       NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
+    ports:
+      - "3001:3000"
     networks:
       - supabase_net
 
   # ── Next.js Blog CMS ─────────────────────────────────────────────────────────
-  # The application itself. Built from the local Dockerfile.
-  # On startup (via entrypoint.sh):
-  #   1. Waits for PostgreSQL
-  #   2. Runs `prisma migrate deploy` (idempotent)
-  #   3. Creates the storage bucket (idempotent)
-  #   4. Starts Next.js
   app:
     build:
       context: .
@@ -289,24 +252,19 @@ services:
       kong:
         condition: service_healthy
     environment:
-      # Next.js / NextAuth
       NODE_ENV: production
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?NEXTAUTH_SECRET is required}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-super_secret_nextauth_key_32_chars_123}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
 
-      # Database — points to the 'db' service on the internal network
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:${POSTGRES_PASSWORD:-super_secret_postgres_password_123}@db:5432/postgres}
       POSTGRES_HOST: ${POSTGRES_HOST:-db}
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
 
-      # Supabase Storage
-      # SUPABASE_URL: internal Docker URL (server-side API calls go through Kong)
       SUPABASE_URL: ${SUPABASE_URL:-http://kong:8000}
-      # SUPABASE_STORAGE_PUBLIC_URL: browser-accessible URL for image src attributes
       SUPABASE_STORAGE_PUBLIC_URL: ${SUPABASE_STORAGE_PUBLIC_URL:-http://localhost:8000}
-      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
-      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjUwMDAwMDAwMH0.CqUNvoaexyAipJyzuDKjgINP_827FDmYWpyIHD8jEMQ}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjI1MDAwMDAwMDB9.3tomIeyNGrqv-T95pnouk4OsMPKO-FZm5XpsQdrJLc8}
       SUPABASE_BUCKET: ${SUPABASE_BUCKET:-blog-media}
     volumes:
       - ./configuration.ts:/app/configuration.ts:ro
