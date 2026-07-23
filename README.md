@@ -50,7 +50,7 @@ Use this scenario if you want to run the **entire platform** — Next.js Applica
 
 ### Step 1: Clone Repository & Create `.env` File
 ```bash
-git clone https://github.com/thesukhjitbajwa/blog.git
+git clone https://github.com/the-sukhsingh/blog.git
 cd blog
 cp .env.example .env
 ```
@@ -102,7 +102,7 @@ Use this scenario if you want to run the **Next.js application in Docker** using
 
 ### Step 1: Clone Repository & Install Dependencies
 ```bash
-git clone https://github.com/thesukhjitbajwa/blog.git
+git clone https://github.com/the-sukhsingh/blog.git
 cd blog
 npm install
 ```
@@ -164,7 +164,7 @@ Use this scenario if you want to run and develop the application locally using *
 
 ### Step 1: Clone Repository & Install Dependencies
 ```bash
-git clone https://github.com/thesukhjitbajwa/blog.git
+git clone https://github.com/the-sukhsingh/blog.git
 cd blog
 npm install
 ```
