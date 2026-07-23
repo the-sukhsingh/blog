@@ -3,7 +3,18 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const connectionString =
+  process.env.DATABASE_URL || "postgresql://postgres:postgres@127.0.0.1:5432/postgres";
+
+const isCloudPostgres =
+  connectionString.includes("supabase.co") ||
+  connectionString.includes("pooler.supabase.com") ||
+  connectionString.includes("sslmode=");
+
+const pool = new Pool({
+  connectionString,
+  ssl: isCloudPostgres ? { rejectUnauthorized: false } : undefined,
+});
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 

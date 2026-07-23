@@ -57,14 +57,21 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # (Can be overridden via docker-compose environment)
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV SUPABASE_URL=http://localhost:3000
+ENV SUPABASE_STORAGE_PUBLIC_URL=http://localhost:3000
+ENV SUPABASE_BUCKET=blog-media
 
 # curl: needed by entrypoint.sh to wait for Storage API + create bucket
-# postgresql-client: provides pg_isready for DB readiness checks
-RUN apk add --no-cache curl postgresql-client
+# postgresql & postgresql-client: embedded local database support + pg_isready
+RUN apk add --no-cache curl postgresql postgresql-client
 
 # Create a non-root system user/group for security
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
+
+# Create directories for postgresql runtime, data, and uploads, owned by nextjs
+RUN mkdir -p /var/lib/postgresql/data /run/postgresql /app/public/uploads && \
+    chown -R nextjs:nodejs /var/lib/postgresql /run/postgresql /app/public/uploads
 
 # ── Next.js standalone server ─────────────────────────────────────────────────
 # The standalone output is self-contained: it includes a traced subset of
@@ -82,7 +89,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules     ./node_modules
 
 # ── Entrypoint ────────────────────────────────────────────────────────────────
 COPY --chown=nextjs:nodejs docker/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
+RUN sed -i 's/\r$//' ./entrypoint.sh && chmod +x ./entrypoint.sh
 
 USER nextjs
 

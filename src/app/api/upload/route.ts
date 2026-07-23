@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { STORAGE_BUCKET, supabaseAdmin } from "@/lib/supabase";
+import fs from "fs/promises";
+import path from "path";
 
 const ALLOWED_TYPES = [
   "image/jpeg",
@@ -77,29 +79,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build the public URL
-    // In Docker, SUPABASE_URL is the internal Kong address (http://kong:8000),
-    // which is unreachable by browsers. SUPABASE_STORAGE_PUBLIC_URL is the
-    // externally accessible URL. For cloud deployments both are the same, so
-    // SUPABASE_STORAGE_PUBLIC_URL can simply be left unset (falls back to SUPABASE_URL).
-    const publicBase =
-      process.env.SUPABASE_STORAGE_PUBLIC_URL ?? process.env.SUPABASE_URL ?? "";
-    const publicUrl = `${publicBase}/storage/v1/object/public/${STORAGE_BUCKET}/${data.path}`;
+    // Return a relative URL by default (/storage/v1/object/public/...)
+    // so images work seamlessly regardless of host port (-p 80:3000, -p 8080:3000, etc.) or domain.
+    const customPublicUrl = process.env.SUPABASE_STORAGE_PUBLIC_URL;
+    const isLocalDefault =
+      !customPublicUrl ||
+      customPublicUrl.includes("localhost") ||
+      customPublicUrl.includes("127.0.0.1") ||
+      customPublicUrl.includes("kong:8000");
+
+    const publicUrl = isLocalDefault
+      ? `/storage/v1/object/public/${STORAGE_BUCKET}/${data.path}`
+      : `${customPublicUrl}/storage/v1/object/public/${STORAGE_BUCKET}/${data.path}`;
 
     return NextResponse.json({ url: publicUrl, path: data.path });
   }
 
-  // ── Base64 fallback (dev — Supabase not configured) ───────────────────────
-  console.warn(
-    "[upload] SUPABASE_URL / SUPABASE_SERVICE_KEY not set. Using base64 fallback.",
-  );
-  const bytes = await file.arrayBuffer();
-  const base64 = Buffer.from(bytes).toString("base64");
-  const dataUrl = `data:${file.type};base64,${base64}`;
+  // ── Local Disk Storage fallback ───────────────────────────────────────────
+  try {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
-  return NextResponse.json({
-    url: dataUrl,
-    warning:
-      "Image stored as base64 (dev mode). Configure SUPABASE_URL and SUPABASE_SERVICE_KEY for persistent storage.",
-  });
+    const uploadDir =
+      process.env.LOCAL_UPLOAD_DIR ??
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "uploads");
+    await fs.mkdir(uploadDir, { recursive: true });
+    await fs.writeFile(path.join(uploadDir, filename), buffer);
+
+    console.log(`[upload] File saved locally to ${path.join(uploadDir, filename)}`);
+
+    return NextResponse.json({
+      url: `/uploads/${filename}`,
+      path: filename,
+    });
+  } catch (err: any) {
+    console.error("[upload] Local storage write error:", err?.message || err);
+    return NextResponse.json(
+      { error: `Local file upload failed: ${err?.message || err}` },
+      { status: 500 },
+    );
+  }
 }

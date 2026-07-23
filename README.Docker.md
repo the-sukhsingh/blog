@@ -33,7 +33,26 @@ docker compose version    # Docker Compose version v2.x+
 
 ---
 
-## Quick Start
+## Single-Command Run (Zero Configuration)
+
+You can pull and run the blog CMS instantly without setting up databases or `.env` files:
+
+```bash
+docker run -d -p 3000:3000 --name blog thesukhjitbajwa/blog:latest
+```
+
+Access the app at **http://localhost:3000**.
+- **Admin Email**: `admin@example.com`
+- **Admin Password**: `changeme123`
+
+To persist data across container restarts:
+```bash
+docker run -d -p 3000:3000 -v blog_data:/var/lib/postgresql/data --name blog thesukhjitbajwa/blog:latest
+```
+
+---
+
+## Full Stack Setup (Docker Compose + Supabase Studio)
 
 ### 1. Generate your `.env` file
 
