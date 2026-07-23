@@ -1,36 +1,240 @@
 # 🚀 Blog CMS — Modern Next.js Publishing Platform
 
-A modern, distraction-free Blog CMS built with **Next.js 16 (App Router)**, **TypeScript**, **Prisma ORM 7**, and a **self-hosted Supabase backend** running in Docker.
+A modern, distraction-free Blog CMS built with **Next.js 16 (App Router)**, **TypeScript**, **Prisma ORM 7**, and **Supabase** (Self-Hosted Docker or Cloud).
 
-Designed with clean typography, responsive themes (light/dark mode), a full-featured admin management dashboard, rich text editing via TipTap, and an optimized Docker Compose production stack.
+Designed with clean typography, responsive light/dark themes, an administrative management dashboard, rich text editing via TipTap, and zero-config deployment options.
 
 ---
 
-## ✨ Features
+## 📌 Choose Your Setup Scenario
 
-### 📖 Reader Interface (Public Blog)
-- **Modern Responsive Design**: Built with Tailwind CSS, smooth micro-animations, and dynamic theme switching (Dark / Light mode).
-- **Rich Content Rendering**: Render HTML/JSON blog posts with custom cover images, categories, tags, and formatting.
-- **Search & Filtering**: Instant search across posts, filter posts by categories and tags.
-- **Interactive Comments**: Reader comment submission with admin moderation.
+Select one of the three setup methods below based on your workflow and infrastructure preferences:
 
-### 🛡️ Admin Workspace (`/admin`)
-- **Dashboard Overview**: Metrics on total posts, published articles, categories, and pending comments.
-- **TipTap Rich Text Editor**: WYSIWYG editor supporting images, links, formatting, task lists, code blocks, and custom hero accent colors (`bgColorLight` / `bgColorDark`).
-- **User Role Management**: Role-based access control (`ADMIN` vs `EDITOR`) with a built-in user management dashboard at `/admin/users`.
-- **Media Library**: Upload and manage media assets stored in self-hosted Supabase Object Storage.
-- **Comment Moderation**: Approve or delete user comments before they appear publicly.
-- **Taxonomy Manager**: Manage post categories and tags dynamically.
+- 🐳 **[Scenario 1: Complete Docker Stack (App + DB + Storage)](#-scenario-1-complete-docker-stack-app--db--storage)** — Run everything locally or on a VPS using Docker & Docker Compose (`thesukhjitbajwa/blog:latest`).
+- ⚡ **[Scenario 2: Docker App + Supabase Cloud (DB + Storage)](#-scenario-2-docker-app--supabase-cloud-db--storage)** — Run the Next.js application container locally via Docker, connected to managed Cloud Supabase.
+- 💻 **[Scenario 3: Local Node.js Development (No Docker)](#-scenario-3-local-nodejs-development--supabase-cloud-no-docker)** — Run Next.js directly on your local machine using Node.js, connected to Cloud Supabase.
+
+---
+
+## 🔑 How to Get Supabase Credentials (For Scenarios 2 & 3)
+
+If you are using **Supabase Cloud** for your Database and Object Storage, follow these steps to collect your required API credentials:
+
+1. **Sign Up / Log In**: Go to [Supabase.com](https://supabase.com) and sign in or create an account.
+2. **Create a Project**: Click **New Project**, select an organization, name your project, set a secure database password, and select your region.
+3. **Get Database Connection String (`DATABASE_URL`)**:
+   - Navigate to **Project Settings** ⚙️ ➔ **Database**.
+   - Scroll to **Connection String** and select **URI**.
+   - Copy the URI string:
+     - **Direct Connection**: `postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@db.[project-ref].supabase.co:5432/postgres`
+     - **Session / Transaction Pooler** (Recommended for serverless / Next.js): `postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true`
+   - *Replace `[YOUR-PASSWORD]` with the database password you set during project creation.*
+4. **Get Supabase Project URL (`SUPABASE_URL` & `SUPABASE_STORAGE_PUBLIC_URL`)**:
+   - Navigate to **Project Settings** ⚙️ ➔ **API**.
+   - Under **Project URL**, copy the URL (e.g., `https://<project-ref>.supabase.co`).
+5. **Get Supabase API Keys**:
+   - In **Project Settings** ⚙️ ➔ **API** ➔ **Project API keys**:
+     - **`service_role` (secret)**: Copy this key for `SUPABASE_SERVICE_KEY` *(bypasses RLS, used by the server to manage storage buckets)*.
+     - **`anon` (public)**: Copy this key for `SUPABASE_ANON_KEY`.
+
+---
+
+## 🐳 Scenario 1: Complete Docker Stack (App + DB + Storage)
+
+Use this scenario if you want to run the **entire platform** — Next.js Application, PostgreSQL Database, Supabase Storage, Kong API Gateway, and Supabase Studio — inside Docker without installing external dependencies.
+
+> 📦 **Docker Image**: Uses official pre-built image **`thesukhjitbajwa/blog:latest`**.
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/) installed on your system.
+
+### Step 1: Clone Repository & Create `.env` File
+```bash
+git clone https://github.com/thesukhjitbajwa/blog.git
+cd blog
+cp .env.example .env
+```
+
+*(Optional) Generate fresh production secrets automatically:*
+```bash
+npm run setup
+```
+
+### Step 2: Configure `docker-compose.yml` to use `thesukhjitbajwa/blog:latest`
+In [`docker-compose.yml`](file:///e:/Projects/blog/docker-compose.yml), update the `app` service to use the Docker image `thesukhjitbajwa/blog:latest`:
+
+```yaml
+  app:
+    image: thesukhjitbajwa/blog:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      kong:
+        condition: service_healthy
+    # ... rest of app configuration
+```
+
+### Step 3: Start the Docker Stack
+```bash
+docker compose up -d
+```
+
+### Step 4: Access Application Services
+Once containers start up (database migrations and seeding run automatically):
+
+| Service | Access URL | Description |
+| :--- | :--- | :--- |
+| **Public Blog** | `http://localhost:3000` | Reader interface & homepage |
+| **Admin Panel** | `http://localhost:3000/admin` | Article, media, & comment management |
+| **Supabase Studio** | `http://localhost:3001` | Database GUI & Table Editor |
+| **Kong API Gateway** | `http://localhost:8000` | Storage & Auth API Gateway |
+
+---
+
+## ⚡ Scenario 2: Docker App + Supabase Cloud (DB + Storage)
+
+Use this scenario if you want to run the **Next.js application in Docker** using **`thesukhjitbajwa/blog:latest`**, but store database records and media files in **Cloud Supabase**.
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed.
+- Node.js & npm (for running the setup script once).
+
+### Step 1: Clone Repository & Install Dependencies
+```bash
+git clone https://github.com/thesukhjitbajwa/blog.git
+cd blog
+npm install
+```
+
+### Step 2: Create `.env` File with Supabase Credentials
+Obtain credentials from your Supabase Dashboard ([see instructions above](#-how-to-get-supabase-credentials-for-scenarios-2--3)) and create a `.env` file at project root:
+
+```env
+# ── Application Secrets ───────────────────────────────────────────────────────
+NEXTAUTH_SECRET=your-random-32-character-secret
+NEXTAUTH_URL=http://localhost:3000
+
+# ── Cloud Supabase Credentials ────────────────────────────────────────────────
+DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_STORAGE_PUBLIC_URL=https://<project-ref>.supabase.co
+SUPABASE_SERVICE_KEY=your-supabase-service-role-secret-key
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_BUCKET=blog-media
+```
+
+### Step 3: Run Automated Cloud Setup
+Run the automated cloud setup script to deploy Prisma migrations, create the public storage bucket in Supabase Cloud, and seed the initial admin account:
+
+```bash
+npm run setup:cloud
+```
+
+### Step 4: Run the Docker Container
+Pull and run the pre-built Docker image passing your `.env` file:
+
+```bash
+# Pull the latest Docker image
+docker pull thesukhjitbajwa/blog:latest
+
+# Run the container on port 3000
+docker run -d \
+  --name blog-app \
+  -p 3000:3000 \
+  --env-file .env \
+  thesukhjitbajwa/blog:latest
+```
+
+*(Alternatively, run via Docker Compose with `docker compose up app -d` after setting `image: thesukhjitbajwa/blog:latest` in `docker-compose.yml`).*
+
+### Step 5: Access the Application
+- **Public Blog**: `http://localhost:3000`
+- **Admin Panel**: `http://localhost:3000/admin`
+
+---
+
+## 💻 Scenario 3: Local Node.js Development + Supabase Cloud (No Docker)
+
+Use this scenario if you want to run and develop the application locally using **Node.js** (without Docker), connected to **Cloud Supabase**.
+
+### Prerequisites
+- **Node.js**: v18.x or v20.x (or higher)
+- **npm**: v9.x or higher
+
+### Step 1: Clone Repository & Install Dependencies
+```bash
+git clone https://github.com/thesukhjitbajwa/blog.git
+cd blog
+npm install
+```
+
+### Step 2: Create `.env` File with Supabase Credentials
+Obtain credentials from your Supabase Dashboard ([see instructions above](#-how-to-get-supabase-credentials-for-scenarios-2--3)) and create a `.env` file at project root:
+
+```env
+# ── Application Secrets ───────────────────────────────────────────────────────
+NEXTAUTH_SECRET=your-random-32-character-secret
+NEXTAUTH_URL=http://localhost:3000
+
+# ── Cloud Supabase Credentials ────────────────────────────────────────────────
+DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_STORAGE_PUBLIC_URL=https://<project-ref>.supabase.co
+SUPABASE_SERVICE_KEY=your-supabase-service-role-secret-key
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_BUCKET=blog-media
+```
+
+### Step 3: Run Automated Cloud Setup
+Deploy Prisma database schema migrations, create the public storage bucket in Supabase Cloud, and seed default admin account:
+
+```bash
+npm run setup:cloud
+```
+
+### Step 4: Apply Site Configuration (Optional)
+Sync site titles, navbar text, and hero copy from [`configuration.ts`](file:///e:/Projects/blog/configuration.ts) to the application:
+
+```bash
+npm run config:apply
+```
+
+### Step 5: Start the Application
+
+#### Development Mode (with hot reloading):
+```bash
+npm run dev
+```
+
+#### Production Mode (build & run local production server):
+```bash
+npm run build
+npm run start
+```
+
+### Step 6: Access the Application
+- **Public Blog**: `http://localhost:3000`
+- **Admin Panel**: `http://localhost:3000/admin`
+
+---
+
+## 🔑 Default Admin Credentials
+
+For all setup scenarios, initial database seeding creates a default administrator account:
+
+- **Login URL**: `http://localhost:3000/admin/login`
+- **Email**: `admin@example.com`
+- **Password**: `changeme123`
+- **Role**: `ADMIN`
+
+> ⚠️ **Security Warning**: Please change the admin password after your first login via the Admin Dashboard (`/admin/users`).
 
 ---
 
 ## ⚙️ Static Site Configuration (`configuration.ts`)
 
-The website's static content — including site titles, navbar text, brand logos/prefixes, homepage hero copy, badge text, empty state copy, admin panel headings, and footer copyright text — is configured in a single top-level configuration file: [`configuration.ts`](file:///e:/Projects/blog/configuration.ts).
-
-### Customizing Site Content
-
-Edit [`configuration.ts`](file:///e:/Projects/blog/configuration.ts) at the root of the project to change static copy:
+Site titles, navbar branding, hero banner content, badge copy, and footer text are managed centrally in [`configuration.ts`](file:///e:/Projects/blog/configuration.ts):
 
 ```ts
 export const siteConfig: SiteConfig = {
@@ -54,162 +258,53 @@ export const siteConfig: SiteConfig = {
     badgeText: "Publishing Live",
     latestStoriesTitle: "Latest Stories",
   },
-  admin: {
-    title: "Admin",
-    brandName: "Studio",
-    loginTitle: "Welcome back",
-    loginDescription: "Sign in to your account to continue.",
-  },
 };
 ```
 
-### Automatic Docker & Build Synchronization
-
-When running **Docker Compose** or local development commands:
-- **`docker compose up`**: The container entrypoint ([`docker/entrypoint.sh`](file:///e:/Projects/blog/docker/entrypoint.sh)) automatically executes `node scripts/apply-config.js` prior to startup.
-- **Docker Build**: The multi-stage [`Dockerfile`](file:///e:/Projects/blog/Dockerfile) automatically runs `node scripts/apply-config.js` before compiling the standalone Next.js application.
-- **Local Dev / Build**: `npm run dev` and `npm run build` trigger the `predev` / `prebuild` hooks (`npm run config:apply`) to sync configuration to `src/configuration.ts`.
-
-To manually apply changes to the static site content at any time:
+To sync changes made in `configuration.ts` to the application:
 ```bash
 npm run config:apply
 ```
 
 ---
 
+## ✨ Features Overview
+
+### 📖 Reader Interface (Public Blog)
+- **Modern Responsive Design**: Built with Tailwind CSS v4, smooth micro-animations, and light/dark theme switching.
+- **Rich Post Rendering**: Supports categories, tags, custom hero cover image, and TipTap rich content.
+- **Instant Search & Filtering**: Fast search across posts, categories, and tags.
+- **Interactive Reader Comments**: Reader comment submission with moderation.
+
+### 🛡️ Admin Workspace (`/admin`)
+- **Dashboard Overview**: Key metrics for posts, published articles, categories, and pending comments.
+- **TipTap Rich Text Editor**: Full WYSIWYG editor supporting images, links, formatting, task lists, and custom hero accent colors.
+- **Media Library**: Upload and manage media assets stored in Supabase Object Storage.
+- **Role-Based Access Control**: Role management (`ADMIN` vs `EDITOR`) at `/admin/users`.
+- **Comment Moderation**: Approve or delete pending comments.
+
+---
+
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Components, Turbopack) & [React 19](https://react.dev/)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Components) & [React 19](https://react.dev/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Database & ORM**: [PostgreSQL 15](https://www.postgresql.org/) & [Prisma ORM 7](https://www.prisma.io/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/) (Credentials provider with bcrypt password hashing)
-- **Storage & Backend**: Self-hosted [Supabase](https://supabase.com/) (Postgres 15, Storage API, GoTrue, Kong Gateway, Supabase Studio)
-- **Styling & UI**: Tailwind CSS v4, Base UI, Lucide Icons, Framer Motion
-- **Containerization**: Docker & Docker Compose (Multi-stage lightweight build)
-
-## 🚀 Deployment & Hosting Freedom
-
-Choose the deployment architecture that fits your needs:
-
-### Option A: Self-Hosted Docker Stack (Docker Compose)
-Run the entire application stack (Next.js CMS, PostgreSQL, Supabase Storage, Kong Gateway, Supabase Studio) locally or on a VPS:
-```bash
-cp .env.example .env && docker compose up -d --build
-```
-
-### Option B: Cloud Hosting (Vercel / Netlify / Render + Cloud Supabase)
-Deploy Next.js to **Vercel** or any custom host while connecting to managed **Cloud Supabase** (PostgreSQL + Cloud Storage):
-1. Create a project at [Supabase.com](https://supabase.com).
-2. Configure `.env` credentials (`DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`).
-3. Run automated cloud setup:
-   ```bash
-   npm run setup:cloud
-   ```
-4. Deploy to Vercel or your hosting provider.
-
-👉 **Full Cloud Setup Guide**: See [`README.Cloud.md`](file:///e:/Projects/blog/README.Cloud.md) for detailed step-by-step instructions.
-
----
-
-## 🔑 Default Login Credentials
-
-Once the containers start up, access the admin panel at **`http://localhost:3000/admin/login`**:
-
-- **Email**: `admin@example.com`
-- **Password**: `changeme123`
-- **Role**: `ADMIN`
-
----
-
-## 🌐 Application URLs
-
-| Service | Access URL | Description |
-| :--- | :--- | :--- |
-| **Public Blog** | `http://localhost:3000` | Homepage & reader interface |
-| **Admin Panel** | `http://localhost:3000/admin` | Management dashboard |
-| **Supabase Studio** | `http://localhost:3001` | Self-hosted database GUI |
-| **Kong API Gateway** | `http://localhost:8000` | API gateway for Storage & Auth |
-
----
-
-## 💻 Local Development Setup (Without Docker)
-
-If you prefer running Next.js locally while connected to PostgreSQL:
-
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-2. **Generate Environment Secrets**:
-   ```bash
-   npm run setup
-   ```
-
-3. **Push Prisma Schema to Database**:
-   ```bash
-   npx prisma db push
-   ```
-
-4. **Seed Initial Admin User**:
-   ```bash
-   npm run seed
-   ```
-
-5. **Start Next.js Development Server**:
-   ```bash
-   npm run dev
-   ```
-
-Open [http://localhost:3000](http://localhost:3000) to view the app.
-
----
-
-## 🐋 Docker Stack & Resource Optimizations
-
-The Docker environment includes resource optimizations tailored for self-hosted environments:
-
-- **Kong API Gateway**: Optimized to 1 worker process with reduced memory buffers and active plugins, reducing memory footprint by **90%** (from ~1 GB RAM down to **~98 MB RAM**).
-- **Prisma CLI 7 Support**: Dockerfile uses a 3-stage minimal Alpine build that packages generated Prisma Client and WASM modules.
-- **Automatic Migration & Seeding**: [`docker/entrypoint.sh`](file:///e:/Projects/blog/docker/entrypoint.sh) executes Prisma migrations and seeds default admin users idempotently.
-
----
-
-## 📁 Project Structure
-
-```text
-blog/
-├── docker/                 # Kong gateway config & entrypoint scripts
-│   ├── entrypoint.sh       # Container startup & migration script
-│   └── kong.yml            # Declarative Kong gateway routing config
-├── prisma/
-│   ├── migrations/         # SQL migration files
-│   ├── schema.prisma       # Prisma database schema definition
-│   └── seed.ts             # Initial database seeder script
-├── public/                 # Static public assets
-├── scripts/
-│   └── setup-env.js        # Environment secret generator
-├── src/
-│   ├── app/                # Next.js App Router (Public routes & /admin)
-│   ├── components/         # React UI components (Admin, Blog, Editor)
-│   └── lib/                # Shared utilities (Prisma client, NextAuth, Supabase)
-├── configuration.ts        # Static site configuration (titles, navbar, hero, etc.)
-├── Dockerfile              # Multi-stage production build
-├── docker-compose.yml      # Docker Compose stack specification
-├── package.json            # Dependencies & npm scripts
-└── prisma.config.ts        # Prisma 7 configuration file
-```
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Storage & Backend**: [Supabase](https://supabase.com/) (Self-Hosted Docker or Supabase Cloud)
+- **Styling**: Tailwind CSS v4, Base UI, Lucide Icons, Framer Motion
+- **Containerization**: Docker & Docker Compose (`thesukhjitbajwa/blog:latest`)
 
 ---
 
 ## 📜 Available NPM Scripts
 
 - `npm run dev` — Starts Next.js development server (runs `config:apply` pre-hook).
-- `npm run build` — Builds the production Next.js standalone app (runs `config:apply` pre-hook).
+- `npm run build` — Builds the production Next.js standalone application.
 - `npm run start` — Starts the Next.js production server.
-- `npm run config:apply` — Applies static site content from `configuration.ts` to `src/configuration.ts`.
-- `npm run setup` — Generates secrets and `.env` file automatically.
-- `npm run setup:fresh` — Overwrites and regenerates all secrets in `.env`.
+- `npm run setup` — Generates secrets and updates `.env` file automatically.
+- `npm run setup:cloud` — Deploys migrations, creates Cloud Supabase storage bucket, and seeds admin.
+- `npm run config:apply` — Applies static site content from `configuration.ts`.
 - `npm run seed` — Runs database seeding script (`prisma/seed.ts`).
 - `npm run lint` — Runs Biome linter checks.
 - `npm run format` — Formats codebase using Biome.

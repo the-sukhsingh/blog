@@ -89,7 +89,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules     ./node_modules
 
 # ── Entrypoint ────────────────────────────────────────────────────────────────
 COPY --chown=nextjs:nodejs docker/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
+RUN sed -i 's/\r$//' ./entrypoint.sh && chmod +x ./entrypoint.sh
 
 USER nextjs
 
